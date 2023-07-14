@@ -1,7 +1,5 @@
-import 'package:barterit_appv2/models/user.dart';
-import 'package:barterit_appv2/screens/loginscreen.dart';
-import 'package:barterit_appv2/screens/registrationscreen.dart';
-import 'package:barterit_appv2/splashscreen.dart';
+import 'package:barterit_app_final/models/user.dart';
+import 'package:barterit_app_final/splashscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

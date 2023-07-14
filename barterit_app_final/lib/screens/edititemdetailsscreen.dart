@@ -1,28 +1,28 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:barterit_appv2/models/user.dart';
-import 'package:barterit_appv2/myconfig.dart';
+import 'package:barterit_app_final/models/item.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
-import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
+import '../models/user.dart';
+import '../myconfig.dart';
 
-class NewItemScreen extends StatefulWidget {
+class EditItemDetailsScreen extends StatefulWidget {
   final User user;
-
-  const NewItemScreen({super.key, required this.user});
+  final Item useritem;
+  const EditItemDetailsScreen(
+      {super.key, required this.user, required this.useritem});
 
   @override
-  State<NewItemScreen> createState() => _NewItemScreenState();
+  State<EditItemDetailsScreen> createState() => _EditItemDetailsScreenState();
 }
 
-class _NewItemScreenState extends State<NewItemScreen> {
+class _EditItemDetailsScreenState extends State<EditItemDetailsScreen> {
   late double screenHeight, screenWidth, cardwitdh;
   File? _image;
-  var pathAsset = "assets/images/camera.png";
+  var pathAsset = "assets/images/1_1";
+
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _itemnameEditingController =
@@ -48,7 +48,6 @@ class _NewItemScreenState extends State<NewItemScreen> {
     "Toys or Hobbies",
   ];
 
-  late Position _currentPosition;
   String curaddress = "";
   String curstate = "";
   String prlat = "";
@@ -59,7 +58,13 @@ class _NewItemScreenState extends State<NewItemScreen> {
   @override
   void initState() {
     super.initState();
-    _determinePosition();
+    _itemnameEditingController.text = widget.useritem.itemName.toString();
+    _itemdescEditingController.text = widget.useritem.itemDesc.toString();
+    _itempriceEditingController.text =
+        double.parse(widget.useritem.itemPrice.toString()).toStringAsFixed(2);
+    _itemqtyEditingController.text = widget.useritem.itemQty.toString();
+    _prstateEditingController.text = widget.useritem.itemState.toString();
+    _prlocalEditingController.text = widget.useritem.itemLocality.toString();
   }
 
   @override
@@ -68,13 +73,9 @@ class _NewItemScreenState extends State<NewItemScreen> {
     screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Add New Item"), actions: [
-        IconButton(
-            onPressed: () {
-              _determinePosition();
-            },
-            icon: const Icon(Icons.refresh))
-      ]),
+      appBar: AppBar(
+        title: const Text("Updadte Item Details"),
+      ),
       body: Column(
         children: [
           Flexible(
@@ -82,7 +83,6 @@ class _NewItemScreenState extends State<NewItemScreen> {
             child: Padding(
               padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
               child: Card(
-                margin: EdgeInsets.only(top: 3),
                 child: ListView(
                   children: [
                     Stack(
@@ -90,22 +90,19 @@ class _NewItemScreenState extends State<NewItemScreen> {
                         CarouselSlider(
                           items: [
                             for (var i = 0; i < selectedImages.length; i++)
-                              GestureDetector(
-                                onTap: () {
-                                  selectFromGallery(i);
-                                },
-                                child: Container(
-                                  width: screenWidth,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: selectedImages[i] == null
-                                          ? AssetImage(pathAsset)
-                                          : FileImage(selectedImages[i]!)
-                                              as ImageProvider,
-                                    ),
-                                  ),
+                              Container(
+                                alignment: Alignment.center,
+                                width: screenWidth,
+                                child: CachedNetworkImage(
+                                  placeholder: (context, url) =>
+                                      const CircularProgressIndicator(),
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(Icons.error),
+                                  imageUrl:
+                                      "${MyConfig().SERVER}/barterit3/assets/items/${widget.useritem.itemId}_${i + 1}.png",
+                                  // fit: BoxFit.cover,
                                 ),
-                              ),
+                              )
                           ],
                           options: CarouselOptions(
                             autoPlay: true,
@@ -288,9 +285,9 @@ class _NewItemScreenState extends State<NewItemScreen> {
                         height: 50,
                         child: ElevatedButton(
                             onPressed: () {
-                              insertDialog();
+                              updateDialog();
                             },
-                            child: const Text("Add Item")),
+                            child: const Text("Update Item")),
                       )
                     ],
                   ),
@@ -303,53 +300,13 @@ class _NewItemScreenState extends State<NewItemScreen> {
     );
   }
 
-  Future<void> cropImage(int index) async {
-    CroppedFile? croppedFile = await ImageCropper().cropImage(
-      sourcePath: _image!.path,
-      aspectRatioPresets: [
-        CropAspectRatioPreset.square,
-        CropAspectRatioPreset.ratio3x2,
-        CropAspectRatioPreset.original,
-        CropAspectRatioPreset.ratio4x3,
-        CropAspectRatioPreset.ratio16x9
-      ],
-      uiSettings: [
-        AndroidUiSettings(
-            toolbarTitle: 'Cropper',
-            toolbarColor: Colors.deepOrange,
-            toolbarWidgetColor: Colors.white,
-            initAspectRatio: CropAspectRatioPreset.ratio3x2,
-            lockAspectRatio: true),
-        IOSUiSettings(
-          title: 'Cropper',
-        ),
-      ],
-    );
-    if (croppedFile != null) {
-      File imageFile = File(croppedFile.path);
-      _image = imageFile;
-      int? sizeInBytes = _image?.lengthSync();
-      double sizeInMb = sizeInBytes! / (1024 * 1024);
-      print(sizeInMb);
-
-      setState(() {
-        selectedImages[index] = _image;
-      });
-    }
-  }
-
-  void insertDialog() {
+  void updateDialog() {
     if (!_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text("Check your input")));
       return;
     }
 
-    if (_image == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please take 3 pictures")));
-      return;
-    }
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -357,7 +314,7 @@ class _NewItemScreenState extends State<NewItemScreen> {
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10.0))),
           title: const Text(
-            "Insert new item?",
+            "Update your item details?",
             style: TextStyle(),
           ),
           content: const Text("Are you sure?", style: TextStyle()),
@@ -369,7 +326,7 @@ class _NewItemScreenState extends State<NewItemScreen> {
               ),
               onPressed: () {
                 Navigator.of(context).pop();
-                insertItem();
+                updateCatch();
                 //registerUser();
               },
             ),
@@ -388,127 +345,38 @@ class _NewItemScreenState extends State<NewItemScreen> {
     );
   }
 
-  Future<void> insertItem() async {
+  void updateCatch() {
     String itemname = _itemnameEditingController.text;
     String itemdesc = _itemdescEditingController.text;
     String itemprice = _itempriceEditingController.text;
     String itemqty = _itemqtyEditingController.text;
-    String state = _prstateEditingController.text;
-    String locality = _prlocalEditingController.text;
-    List<String> base64Images = imagesToBase64();
 
-    http.post(Uri.parse("${MyConfig().SERVER}/barterit3/php/insert_item.php"),
+    http.post(Uri.parse("${MyConfig().SERVER}/barterit3/php/update_item.php"),
         body: {
-          "userid": widget.user.id.toString(),
+          "itemid": widget.useritem.itemId,
           "itemname": itemname,
           "itemdesc": itemdesc,
           "itemprice": itemprice,
           "itemqty": itemqty,
           "category": selectedCategory,
-          "latitude": prlat,
-          "longitude": prlong,
-          "state": state,
-          "locality": locality,
-          "image1": base64Images.isNotEmpty ? base64Images[0] : '',
-          "image2": base64Images.length >= 2 ? base64Images[1] : '',
-          "image3": base64Images.length >= 3 ? base64Images[2] : '',
         }).then((response) {
       print(response.body);
+      print(response.statusCode);
       if (response.statusCode == 200) {
         var jsondata = jsonDecode(response.body);
-        print(jsondata);
         if (jsondata['status'] == 'success') {
           ScaffoldMessenger.of(context)
-              .showSnackBar(const SnackBar(content: Text("Insert Success")));
+              .showSnackBar(const SnackBar(content: Text("Update Success")));
+          Navigator.pop(context);
         } else {
           ScaffoldMessenger.of(context)
-              .showSnackBar(const SnackBar(content: Text("Insert Failed")));
+              .showSnackBar(const SnackBar(content: Text("Update Failed")));
         }
-        Navigator.pop(context);
       } else {
         ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text("Insert Failed")));
+            .showSnackBar(const SnackBar(content: Text("Update Failed")));
         Navigator.pop(context);
       }
     });
-  }
-
-  void _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    // Check if location services are enabled
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
-    // Check location permission status
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      // Request location permission if denied
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
-    // Handle permanently denied location permission
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error('Location permissions are permanently denied.');
-    }
-    // Get the current position
-    _currentPosition = await Geolocator.getCurrentPosition();
-    // Get the address based on the current position
-    _getAddress(_currentPosition);
-    //return await Geolocator.getCurrentPosition();
-  }
-
-  _getAddress(Position pos) async {
-    // Retrieve the list of placemarks (address) from coordinates
-    List<Placemark> placemarks =
-        await placemarkFromCoordinates(pos.latitude, pos.longitude);
-    if (placemarks.isEmpty) {
-      // If no placemark is found, set default values for address
-      _prlocalEditingController.text = "Changlun";
-      _prstateEditingController.text = "Kedah";
-      prlat = "6.443455345";
-      prlong = "100.05488449";
-    } else {
-      // Set the address values based on the retrieved placemark
-      _prlocalEditingController.text = placemarks[0].locality.toString();
-      _prstateEditingController.text =
-          placemarks[0].administrativeArea.toString();
-      prlat = _currentPosition.latitude.toString();
-      prlong = _currentPosition.longitude.toString();
-    }
-    setState(() {});
-  }
-
-  Future<void> selectFromGallery(int i) async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(
-      source: ImageSource.gallery,
-      maxHeight: 800,
-      maxWidth: 800,
-    );
-    if (pickedFile != null) {
-      _image = File(pickedFile.path);
-      cropImage(i);
-    } else {
-      print('No image selected.');
-    }
-  }
-
-  List<String> imagesToBase64() {
-    List<String> base64Images = [];
-
-    for (var i = 0; i < selectedImages.length; i++) {
-      final image = selectedImages[i];
-      if (image != null) {
-        List<int> imageBytes = File(image.path).readAsBytesSync();
-        String base64Image = base64Encode(imageBytes);
-        base64Images.add(base64Image);
-      }
-    }
-    return base64Images;
   }
 }

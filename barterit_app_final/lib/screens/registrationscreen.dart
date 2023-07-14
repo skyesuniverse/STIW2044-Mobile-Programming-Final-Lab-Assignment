@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'package:barterit_appv2/myconfig.dart';
-import 'package:barterit_appv2/screens/loginscreen.dart';
+import 'package:barterit_app_final/myconfig.dart';
+import 'package:barterit_app_final/screens/loginscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
