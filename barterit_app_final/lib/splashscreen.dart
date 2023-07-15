@@ -76,7 +76,7 @@ class _SplashScreenState extends State<SplashScreen> {
     if (ischeck) {
       try {
         http.post(
-            Uri.parse("${MyConfig().SERVER}/barterit3/php/login_user.php"),
+            Uri.parse("${MyConfig().SERVER}/barterit_final/php/login_user.php"),
             body: {"email": email, "password": password}).then((response) {
           print(response.statusCode);
           print(response.body);

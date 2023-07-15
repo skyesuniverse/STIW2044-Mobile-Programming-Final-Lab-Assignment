@@ -99,7 +99,7 @@ class _EditItemDetailsScreenState extends State<EditItemDetailsScreen> {
                                   errorWidget: (context, url, error) =>
                                       const Icon(Icons.error),
                                   imageUrl:
-                                      "${MyConfig().SERVER}/barterit3/assets/items/${widget.useritem.itemId}_${i + 1}.png",
+                                      "${MyConfig().SERVER}/barterit_final/assets/items/${widget.useritem.itemId}_${i + 1}.png",
                                   // fit: BoxFit.cover,
                                 ),
                               )
@@ -351,7 +351,8 @@ class _EditItemDetailsScreenState extends State<EditItemDetailsScreen> {
     String itemprice = _itempriceEditingController.text;
     String itemqty = _itemqtyEditingController.text;
 
-    http.post(Uri.parse("${MyConfig().SERVER}/barterit3/php/update_item.php"),
+    http.post(
+        Uri.parse("${MyConfig().SERVER}/barterit_final/php/update_item.php"),
         body: {
           "itemid": widget.useritem.itemId,
           "itemname": itemname,

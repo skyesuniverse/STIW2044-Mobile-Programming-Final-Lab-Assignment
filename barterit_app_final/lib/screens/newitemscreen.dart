@@ -397,7 +397,7 @@ class _NewItemScreenState extends State<NewItemScreen> {
     String locality = _prlocalEditingController.text;
     List<String> base64Images = imagesToBase64();
 
-    http.post(Uri.parse("${MyConfig().SERVER}/barterit3/php/insert_item.php"),
+    http.post(Uri.parse("${MyConfig().SERVER}/barterit_final/php/insert_item.php"),
         body: {
           "userid": widget.user.id.toString(),
           "itemname": itemname,

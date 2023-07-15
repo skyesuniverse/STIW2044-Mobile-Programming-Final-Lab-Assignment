@@ -61,7 +61,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                                   errorWidget: (context, url, error) =>
                                       const Icon(Icons.error),
                                   imageUrl:
-                                      "${MyConfig().SERVER}/barterit3/assets/items/${widget.useritem.itemId}_${i + 1}.png",
+                                      "${MyConfig().SERVER}/barterit_final/assets/items/${widget.useritem.itemId}_${i + 1}.png",
                                 ),
                               )
                           ],

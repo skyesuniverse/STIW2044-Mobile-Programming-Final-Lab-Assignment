@@ -103,7 +103,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
                                     width: screenWidth,
                                     fit: BoxFit.cover,
                                     imageUrl:
-                                        "${MyConfig().SERVER}/barterit3/assets/items/${itemList[index].itemId}_1.png",
+                                        "${MyConfig().SERVER}/barterit_final/assets/items/${itemList[index].itemId}_1.png",
                                     placeholder: (context, url) =>
                                         const LinearProgressIndicator(),
                                     errorWidget: (context, url, error) =>
@@ -169,16 +169,17 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
   }
 
   void loadItems(int page) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return const AlertDialog(
-          title: Text("Loading..."),
-          content: CircularProgressIndicator(),
-        );
-      },
-    );
-    http.post(Uri.parse("${MyConfig().SERVER}/barterit3/php/load_items.php"),
+    // showDialog(
+    //   context: context,
+    //   builder: (BuildContext context) {
+    //     return const AlertDialog(
+    //       title: Text("Loading..."),
+    //       content: CircularProgressIndicator(),
+    //     );
+    //   },
+    // );
+    http.post(
+        Uri.parse("${MyConfig().SERVER}/barterit_final/php/load_items.php"),
         // body: {}).then((response) {
         body: {"pageno": page.toString()}).then((response) {
       // code for pagination purpose above is ori code without pagination
@@ -262,7 +263,8 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
   }
 
   void searchItem(String search) {
-    http.post(Uri.parse("${MyConfig().SERVER}/barterit3/php/load_items.php"),
+    http.post(
+        Uri.parse("${MyConfig().SERVER}/barterit_final/php/load_items.php"),
         body: {"search": search}).then((response) {
       //print(response.body);
       log(response.body);
