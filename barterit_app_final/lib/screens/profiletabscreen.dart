@@ -1,7 +1,14 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:http/http.dart' as http;
 import 'package:barterit_app_final/models/user.dart';
+import 'package:barterit_app_final/myconfig.dart';
 import 'package:barterit_app_final/screens/editprofilescreen.dart';
 import 'package:barterit_app_final/splashscreen.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileTabScreen extends StatefulWidget {
@@ -14,6 +21,12 @@ class ProfileTabScreen extends StatefulWidget {
 }
 
 class _ProfileTabScreenState extends State<ProfileTabScreen> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _oldpasswordController = TextEditingController();
+  final TextEditingController _newpasswordController = TextEditingController();
+  File? _image;
+  var pathAsset = "assets/images/profile.png";
+  var val = 50;
   String maintitle = 'Profile';
   late double screenHeight, screenWidth, cardwitdh;
 
@@ -63,10 +76,69 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
                     children: [
-                      CircleAvatar(
-                        radius: screenWidth * 0.1,
-                        backgroundImage:
-                            AssetImage('assets/images/loggedin_profile.jpg'),
+                      GestureDetector(
+                        onTap: () {
+                          _updateImageDialog();
+                        },
+                        child: Stack(
+                          alignment: Alignment.bottomRight,
+                          children: [
+                            CircleAvatar(
+                              radius: screenWidth * 0.1,
+                              child: ClipOval(
+                                child: CachedNetworkImage(
+                                    imageUrl:
+                                        "${MyConfig().SERVER}/barterit_final/assets/profileimages/${widget.user.id}.png?v=$val",
+                                    placeholder: (context, url) =>
+                                        const LinearProgressIndicator(),
+                                    errorWidget: (context, url, error) =>
+                                        Image.network(
+                                          "${MyConfig().SERVER}/barterit_final/assets/profileimages/0.png",
+                                          scale: 2,
+                                        )),
+                              ),
+
+                              // child: Container(
+                              //   child: CachedNetworkImage(
+                              //     imageUrl:
+                              //         "${MyConfig().SERVER}/barterit_final/assets/profileimages/${widget.user.id}.png?",
+                              //   ),
+                              // )
+                              // backgroundImage: CachedNetworkImageProvider(
+                              //     "${MyConfig().SERVER}/barterit_final/assets/profileimages/${widget.user.id}.png?"),
+                              // child: Image(
+                              //   image: _image == null
+                              //       ? AssetImage(pathAsset)
+                              //       : FileImage(_image!) as ImageProvider,
+                              //   fit: BoxFit.contain,
+                              // )
+                              // CachedNetworkImage(
+                              //     imageUrl:
+                              //         "${MyConfig().SERVER}/barterit_final/assets/profileimages/${widget.user.id}.png?v=$val",
+                              //     placeholder: (context, url) =>
+                              //         const LinearProgressIndicator(),
+                              //     errorWidget: (context, url, error) => Image.network(
+                              //           "${MyConfig().SERVER}/barterit_final/assets/profileimages/0.png",
+                              //           scale: 2,
+                              //         )),
+                              // backgroundImage:
+                              //     AssetImage('assets/images/loggedin_profile.jpg'),
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Icon(
+                                  Icons.edit,
+                                  size: 16.0,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       SizedBox(width: screenWidth * 0.05),
                       Column(
@@ -75,23 +147,23 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
                           Text(
                             widget.user.name.toString(),
                             style: TextStyle(
-                              fontSize: screenWidth * 0.065,
+                              fontSize: screenWidth * 0.07,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(height: screenHeight * 0.01),
+                          SizedBox(height: screenHeight * 0.015),
                           Text(
                             widget.user.email.toString(),
                             style: TextStyle(fontSize: screenWidth * 0.045),
                           ),
-                          SizedBox(height: screenHeight * 0.015),
-                          Align(
-                            alignment: Alignment.center,
-                            child: ElevatedButton(
-                              onPressed: onEditProfile,
-                              child: Text('Edit Account'),
-                            ),
-                          ),
+                          // SizedBox(height: screenHeight * 0.015),
+                          // Align(
+                          //   alignment: Alignment.center,
+                          //   child: ElevatedButton(
+                          //     onPressed: onEditProfile,
+                          //     child: Text('Edit Account'),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ],
@@ -100,14 +172,45 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
               ),
               SizedBox(height: screenHeight * 0.04),
               ListTile(
+                dense: true,
                 // tileColor: Colors.amber,
                 leading: Icon(Icons.shopping_bag_outlined),
                 title: Text('My Purchase'),
+                trailing: Icon(Icons.arrow_forward_ios_rounded),
+                onTap: () {},
+              ),
+              Divider(),
+              SizedBox(height: screenHeight * 0.0002),
+              ListTile(
+                dense: true,
+                // tileColor: Colors.amber,
+                leading: Icon(Icons.mode_edit_outlined),
+                title: Text('Change Name'),
+                trailing: Icon(Icons.arrow_forward_ios_rounded),
+                onTap: () {
+                  _updateNameDialog();
+                },
+              ),
+              Divider(),
+              SizedBox(height: screenHeight * 0.0002),
+              ListTile(
+                dense: true,
+                // tileColor: Colors.amber,
+                leading: Icon(Icons.lock_outline),
+                title: Text('Change Password'),
+                trailing: Icon(Icons.arrow_forward_ios_rounded),
+                onTap: () {
+                  _changePassDialog();
+                },
               ),
               Divider(),
               ListTile(
+                dense: true,
                 leading: Icon(Icons.power_settings_new),
                 title: Text('Logout'),
+                onTap: () {
+                  _gotologout();
+                },
               ),
               Divider(),
             ],
@@ -169,6 +272,7 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
     );
   }
 
+  ////////////////////////////
   Future<void> _gotologout() async {
     print(widget.user.name);
     showDialog(
@@ -206,12 +310,223 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
     );
   }
 
-  onEditProfile() {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (content) => EditProfileScreen(
-                  user: widget.user,
-                )));
+  void _updateNameDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20.0))),
+          title: const Text(
+            "Change Name?",
+            style: TextStyle(),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: _nameController,
+                decoration: InputDecoration(
+                  labelText: 'Name',
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0)),
+                  contentPadding: EdgeInsets.symmetric(
+                    vertical: screenHeight * 0.02,
+                    horizontal: screenHeight * 0.02,
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your name';
+                  }
+                  return null;
+                },
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(
+                "Yes",
+                style: TextStyle(),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                String newname = _nameController.text;
+                _updateName(newname);
+              },
+            ),
+            TextButton(
+              child: const Text(
+                "No",
+                style: TextStyle(),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
+
+  void _updateName(String newname) {
+    http.post(
+        Uri.parse(
+            "${MyConfig().SERVER}/bartertit_final/php/update_profile.php"),
+        body: {
+          "userid": widget.user.id,
+          "newname": newname,
+        }).then((response) {
+      var jsondata = jsonDecode(response.body);
+      if (response.statusCode == 200 && jsondata['status'] == 'success') {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Name changed succesfully.")));
+        Navigator.pop(context);
+        setState(() {
+          widget.user.name = newname;
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Name changed failed.")));
+        Navigator.pop(context);
+      }
+    });
+  }
+
+  void _updateImageDialog() {
+    if (widget.user.id == "0") {
+      // Fluttertoast.showToast(
+      //     msg: "Please login/register",
+      //     toastLength: Toast.LENGTH_SHORT,
+      //     gravity: ToastGravity.BOTTOM,
+      //     timeInSecForIosWeb: 1,
+      //     fontSize: 16.0);
+      return;
+    }
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+            title: const Text(
+              "Select from",
+            ),
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                TextButton.icon(
+                    onPressed: () => {
+                          Navigator.of(context).pop(),
+                          _galleryPicker(),
+                        },
+                    icon: const Icon(Icons.browse_gallery),
+                    label: const Text("Gallery")),
+                TextButton.icon(
+                    onPressed: () =>
+                        {Navigator.of(context).pop(), _cameraPicker()},
+                    icon: const Icon(Icons.camera_alt),
+                    label: const Text("Camera")),
+              ],
+            ));
+      },
+    );
+  }
+
+  Future<void> _galleryPicker() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.gallery,
+      maxHeight: 1200,
+      maxWidth: 800,
+    );
+    if (pickedFile != null) {
+      _image = File(pickedFile.path);
+      cropImage();
+    }
+  }
+
+  Future<void> _cameraPicker() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.camera,
+      maxHeight: 1200,
+      maxWidth: 800,
+    );
+    if (pickedFile != null) {
+      _image = File(pickedFile.path);
+      cropImage();
+    }
+  }
+
+  Future<void> cropImage() async {
+    CroppedFile? croppedFile = await ImageCropper().cropImage(
+      sourcePath: _image!.path,
+      aspectRatioPresets: [
+        CropAspectRatioPreset.square,
+      ],
+      uiSettings: [
+        AndroidUiSettings(
+            toolbarTitle: 'Cropper',
+            toolbarColor: Colors.deepOrange,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.square,
+            lockAspectRatio: false),
+        IOSUiSettings(
+          title: 'Cropper',
+        ),
+      ],
+    );
+    if (croppedFile != null) {
+      File imageFile = File(croppedFile.path);
+      _image = imageFile;
+      _updateProfileImage();
+      setState(() {});
+    }
+  }
+
+  Future<void> _updateProfileImage() async {
+    if (_image == null) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("No Image Available.")));
+      return;
+    }
+    File imageFile = File(_image!.path);
+    print(imageFile);
+    String base64Image = base64Encode(imageFile.readAsBytesSync());
+    // print(base64Image);
+    http.post(
+        Uri.parse("${MyConfig().SERVER}/barterit_final/php/update_profile.php"),
+        body: {
+          "userid": widget.user.id.toString(),
+          "image": base64Image.toString(),
+        }).then((response) {
+      var jsondata = jsonDecode(response.body);
+      print(jsondata);
+      if (response.statusCode == 200 && jsondata['status'] == 'success') {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text("Edit Success")));
+        setState(() {});
+        // DefaultCacheManager manager = DefaultCacheManager();
+        // manager.emptyCache(); //clears all data in cache.
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text("Edit Failed")));
+        Navigator.pop(context);
+      }
+    });
+  }
+
+  void _changePassDialog() {}
+
+  // onEditProfile() {
+  //   Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //           builder: (content) => EditProfileScreen(
+  //                 user: widget.user,
+  //               )));
+  // }
 }

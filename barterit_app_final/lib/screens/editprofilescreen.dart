@@ -1,9 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:barterit_app_final/models/user.dart';
+import 'package:barterit_app_final/myconfig.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
 
 class EditProfileScreen extends StatefulWidget {
   final User user;
@@ -27,6 +30,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   bool _newpasswordVisible = true;
   File? _image;
   var pathAsset = "assets/images/profile.png";
+  var val = 50;
 
   @override
   void initState() {
@@ -73,15 +77,32 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         alignment: Alignment.bottomRight,
                         children: [
                           CircleAvatar(
-                            radius: 55.0,
-                            backgroundImage: AssetImage(
-                                'assets/images/loggedin_profile.jpg'),
-                          ),
-                          CircleAvatar(
-                            radius: 55.0,
-                            backgroundImage: AssetImage(
-                                'assets/images/loggedin_profile.jpg'),
-                          ),
+                              radius: 55.0,
+                              backgroundImage: CachedNetworkImageProvider(
+                                  "${MyConfig().SERVER}/barterit_final/assets/profileimages/${widget.user.id}.png?v=$val")
+
+                              // Image(
+                              //   image: _image == null
+                              //       ? AssetImage(pathAsset)
+                              //       : FileImage(_image!) as ImageProvider,
+                              //       // CachedNetworkImage(
+                              //   //     imageUrl:
+                              //   //         "${MyConfig().SERVER}/barterit_final/assets/profileimages/${widget.user.id}.png?v=$val",
+                              //   fit: BoxFit.contain,
+                              // ),
+                              // CachedNetworkImage(
+                              //     imageUrl:
+                              //         "${MyConfig().SERVER}/barterit_final/assets/profileimages/${widget.user.id}.png?v=$val",
+                              //     placeholder: (context, url) =>
+                              //         const LinearProgressIndicator(),
+                              //     errorWidget: (context, url, error) =>
+                              //         Image.network(
+                              //           "${MyConfig().SERVER}/barterit_final/assets/profileimages/0.png",
+                              //           scale: 2,
+                              //         )),
+                              // backgroundImage: AssetImage(
+                              //     'assets/images/loggedin_profile.jpg'),
+                              ),
                           Container(
                             decoration: BoxDecoration(
                               color: Colors.white,
@@ -257,7 +278,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       height: 50,
                       child: ElevatedButton(
                           onPressed: () {
-                            editProfileDialog();
+                            updateProfileDialog();
                           },
                           child: const Text("Save")),
                     )
@@ -270,8 +291,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       ),
     );
   }
-
-  void editProfileDialog() {}
 
   _updateImageDialog() {
     if (widget.user.id == "0") {
@@ -359,53 +378,129 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     if (croppedFile != null) {
       File imageFile = File(croppedFile.path);
       _image = imageFile;
-      _updateProfileImage();
+      int? sizeInBytes = _image?.lengthSync();
+      double sizeInMb = sizeInBytes! / (1024 * 1024);
+      print(sizeInMb);
+
       setState(() {});
     }
   }
 
-  void _updateProfileImage() {}
+  Future<void> _updateProfileImage() async {
+    if (_image == null) {
+      // Fluttertoast.showToast(
+      //     msg: "No image available",
+      //     toastLength: Toast.LENGTH_SHORT,
+      //     gravity: ToastGravity.BOTTOM,
+      //     timeInSecForIosWeb: 1,
+      //     fontSize: 16.0);
+      return;
+    }
+    File imageFile = File(_image!.path);
+    print(imageFile);
+    String base64Image = base64Encode(imageFile.readAsBytesSync());
+    // print(base64Image);
+    http.post(
+        Uri.parse("${MyConfig().SERVER}/barterit_final/php/update_profile.php"),
+        body: {
+          "userid": widget.user.id.toString(),
+          "image": base64Image.toString(),
+        }).then((response) {
+      var jsondata = jsonDecode(response.body);
+      print(jsondata);
+      if (response.statusCode == 200 && jsondata['status'] == 'success') {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text("Edit Success")));
 
-  // Future<void> _updateProfileImage() async {
-  //   if (_image == null) {
-  //     // Fluttertoast.showToast(
-  //     //     msg: "No image available",
-  //     //     toastLength: Toast.LENGTH_SHORT,
-  //     //     gravity: ToastGravity.BOTTOM,
-  //     //     timeInSecForIosWeb: 1,
-  //     //     fontSize: 16.0);
-  //     return;
-  //   }
-  //   File imageFile = File(_image!.path);
-  //   print(imageFile);
-  //   String base64Image = base64Encode(imageFile.readAsBytesSync());
-  //   // print(base64Image);
-  //   http.post(
-  //       Uri.parse("${MyConfig().SERVER}/mynelayan/php/update_profile.php"),
-  //       body: {
-  //         "userid": widget.user.id.toString(),
-  //         "image": base64Image.toString(),
-  //       }).then((response) {
-  //     var jsondata = jsonDecode(response.body);
-  //     print(jsondata);
-  //     if (response.statusCode == 200 && jsondata['status'] == 'success') {
-  //       Fluttertoast.showToast(
-  //           msg: "Success",
-  //           toastLength: Toast.LENGTH_SHORT,
-  //           gravity: ToastGravity.BOTTOM,
-  //           timeInSecForIosWeb: 1,
-  //           fontSize: 16.0);
-  //       val = random.nextInt(1000);
-  //       setState(() {});
-  //       // DefaultCacheManager manager = DefaultCacheManager();
-  //       // manager.emptyCache(); //clears all data in cache.
-  //     } else {
-  //       Fluttertoast.showToast(
-  //           msg: "Failed",
-  //           toastLength: Toast.LENGTH_SHORT,
-  //           gravity: ToastGravity.BOTTOM,
-  //           timeInSecForIosWeb: 1,
-  //           fontSize: 16.0);
-  //     }
-  //   });
+        setState(() {});
+        // DefaultCacheManager manager = DefaultCacheManager();
+        // manager.emptyCache(); //clears all data in cache.
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text("Edit Failed")));
+        Navigator.pop(context);
+      }
+    });
+  }
+  ////////////////////////////////////
+
+  void updateProfileDialog() {
+    // if (!_formKey.currentState!.validate()) {
+    //   ScaffoldMessenger.of(context)
+    //       .showSnackBar(const SnackBar(content: Text("Check your input")));
+    //   return;
+    // }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10.0))),
+          title: const Text(
+            "Update your profile details?",
+            style: TextStyle(),
+          ),
+          content: const Text("Are you sure?", style: TextStyle()),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(
+                "Yes",
+                style: TextStyle(),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                updateProfile();
+                //registerUser();
+              },
+            ),
+            TextButton(
+              child: const Text(
+                "No",
+                style: TextStyle(),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void updateProfile() {
+    String username = _nameEditingController.text;
+    String useroldpass = _oldpassEditingController.text;
+    String usernewpass = _newpassEditingController.text;
+    String base64Image = base64Encode(_image!.readAsBytesSync());
+
+    http.post(
+        Uri.parse("${MyConfig().SERVER}/barterit_final/php/update_profile.php"),
+        body: {
+          "userid": widget.user.id,
+          "newname": username,
+          "oldpass": useroldpass,
+          "newpass": usernewpass,
+          "image": base64Image,
+        }).then((response) {
+      print(response.body);
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        var jsondata = jsonDecode(response.body);
+        if (jsondata['status'] == 'success') {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text("Update Success")));
+          Navigator.pop(context);
+        } else {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text("Update Failed")));
+        }
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text("Update Failed")));
+        Navigator.pop(context);
+      }
+    });
+  }
 }
