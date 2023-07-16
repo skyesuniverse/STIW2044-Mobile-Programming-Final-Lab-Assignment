@@ -171,7 +171,8 @@ class _SellerTabScreenState extends State<SellerTabScreen> {
       return;
     }
 
-    http.post(Uri.parse("${MyConfig().SERVER}/barterit_final/php/load_items.php"),
+    http.post(
+        Uri.parse("${MyConfig().SERVER}/barterit_final/php/load_items.php"),
         body: {"userid": widget.user.id}).then((response) {
       print(response.body);
       //log(response.body);
@@ -227,7 +228,8 @@ class _SellerTabScreenState extends State<SellerTabScreen> {
   }
 
   void deleteCatch(int index) {
-    http.post(Uri.parse("${MyConfig().SERVER}/barterit_final/php/delete_item.php"),
+    http.post(
+        Uri.parse("${MyConfig().SERVER}/barterit_final/php/delete_item.php"),
         body: {
           "userid": widget.user.id,
           "itemid": itemList[index].itemId
@@ -308,7 +310,8 @@ class _SellerTabScreenState extends State<SellerTabScreen> {
   }
 
   void searchItem(String search) {
-    http.post(Uri.parse("${MyConfig().SERVER}/barterit_final/php/load_items.php"),
+    http.post(
+        Uri.parse("${MyConfig().SERVER}/barterit_final/php/load_items.php"),
         body: {"search": search}).then((response) {
       //print(response.body);
       log(response.body);

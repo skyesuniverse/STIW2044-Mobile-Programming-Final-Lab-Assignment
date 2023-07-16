@@ -24,16 +24,30 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _oldpasswordController = TextEditingController();
   final TextEditingController _newpasswordController = TextEditingController();
+  late List<Widget> tabchildren;
   File? _image;
   var pathAsset = "assets/images/profile.png";
   var val = 50;
   String maintitle = 'Profile';
   late double screenHeight, screenWidth, cardwitdh;
+  late bool hasProfileImage = false;
 
   @override
   void initState() {
     super.initState();
     print('Profile');
+
+    // Update the hasProfileImage property of the User object
+    if (widget.user.id != "0") {
+      http
+          .head(Uri.parse(
+              "${MyConfig().SERVER}/barterit_final/assets/profileimages/${widget.user.id}.png?v=$val"))
+          .then((response) {
+        setState(() {
+          hasProfileImage = response.statusCode == 200;
+        });
+      });
+    }
   }
 
   @override
@@ -86,16 +100,25 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
                             CircleAvatar(
                               radius: screenWidth * 0.1,
                               child: ClipOval(
-                                child: CachedNetworkImage(
-                                    imageUrl:
-                                        "${MyConfig().SERVER}/barterit_final/assets/profileimages/${widget.user.id}.png?v=$val",
-                                    placeholder: (context, url) =>
-                                        const LinearProgressIndicator(),
-                                    errorWidget: (context, url, error) =>
-                                        Image.network(
+                                child: hasProfileImage
+                                    ? CachedNetworkImage(
+                                        imageUrl:
+                                            "${MyConfig().SERVER}/barterit_final/assets/profileimages/${widget.user.id}.png?v=$val",
+                                        placeholder: (context, url) =>
+                                            Image.asset(
+                                          pathAsset,
+                                          fit: BoxFit.contain,
+                                        ),
+                                        errorWidget: (context, url, error) =>
+                                            Image.network(
                                           "${MyConfig().SERVER}/barterit_final/assets/profileimages/0.png",
                                           scale: 2,
-                                        )),
+                                        ),
+                                      )
+                                    : Image.asset(
+                                        pathAsset,
+                                        fit: BoxFit.contain,
+                                      ),
                               ),
 
                               // child: Container(
@@ -328,7 +351,7 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
               TextFormField(
                 controller: _nameController,
                 decoration: InputDecoration(
-                  labelText: 'Name',
+                  labelText: 'Enter new name',
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0)),
                   contentPadding: EdgeInsets.symmetric(
@@ -374,13 +397,13 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
 
   void _updateName(String newname) {
     http.post(
-        Uri.parse(
-            "${MyConfig().SERVER}/bartertit_final/php/update_profile.php"),
+        Uri.parse("${MyConfig().SERVER}/barterit_final/php/update_profile.php"),
         body: {
           "userid": widget.user.id,
           "newname": newname,
         }).then((response) {
       var jsondata = jsonDecode(response.body);
+      print(response.statusCode);
       if (response.statusCode == 200 && jsondata['status'] == 'success') {
         ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text("Name changed succesfully.")));
@@ -519,7 +542,111 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
     });
   }
 
-  void _changePassDialog() {}
+  void _changePassDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          contentPadding: EdgeInsets.symmetric(
+            vertical: screenHeight * 0.02,
+            horizontal: screenHeight * 0.03,
+          ),
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10.0))),
+          title: const Text(
+            "Change Password?",
+            style: TextStyle(),
+          ),
+          content: Container(
+            width: double.maxFinite,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: _oldpasswordController,
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            labelText: 'Old Password',
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0)),
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: screenHeight * 0.02,
+                              horizontal: screenHeight * 0.02,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: screenHeight * 0.015),
+                        TextFormField(
+                          controller: _newpasswordController,
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            labelText: 'New Password',
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0)),
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: screenHeight * 0.02,
+                              horizontal: screenHeight * 0.02,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(
+                "Yes",
+                style: TextStyle(),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                changePass();
+              },
+            ),
+            TextButton(
+              child: const Text(
+                "No",
+                style: TextStyle(),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void changePass() {
+    http.post(
+        Uri.parse("${MyConfig().SERVER}/barterit_final/php/update_profile.php"),
+        body: {
+          "userid": widget.user.id,
+          "oldpass": _oldpasswordController.text,
+          "newpass": _newpasswordController.text,
+        }).then((response) {
+      var jsondata = jsonDecode(response.body);
+      if (response.statusCode == 200 && jsondata['status'] == 'success') {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text("Change Success")));
+        setState(() {});
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text("Change Failed")));
+      }
+    });
+  }
 
   // onEditProfile() {
   //   Navigator.push(
