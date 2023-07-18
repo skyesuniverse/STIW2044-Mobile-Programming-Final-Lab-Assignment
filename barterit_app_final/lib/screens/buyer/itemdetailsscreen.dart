@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:barterit_app_final/models/item.dart';
 import 'package:barterit_app_final/models/user.dart';
 import 'package:barterit_app_final/myconfig.dart';
+import 'package:barterit_app_final/screens/buyer/checkoutscreen.dart';
 import 'package:barterit_app_final/screens/shared/profiletabscreen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -36,6 +37,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
   int userqty = 1;
   double totalprice = 0.0;
   double singleprice = 0.0;
+  int curpage = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -324,5 +326,14 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
     );
   }
 
-  void barteritdialog() {}
+  void barteritdialog() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (content) => CheckOutScreen(
+                  user: widget.user,
+                  useritem: widget.useritem,
+                  page: curpage,
+                )));
+  }
 }

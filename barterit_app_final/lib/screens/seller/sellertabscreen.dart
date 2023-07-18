@@ -5,6 +5,7 @@ import 'package:barterit_app_final/models/user.dart';
 import 'package:barterit_app_final/myconfig.dart';
 import 'package:barterit_app_final/screens/seller/edititemdetailsscreen.dart';
 import 'package:barterit_app_final/screens/seller/newitemscreen.dart';
+import 'package:barterit_app_final/screens/seller/barterorder.dart';
 import 'package:barterit_app_final/screens/shared/profiletabscreen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -97,7 +98,7 @@ class _SellerTabScreenState extends State<SellerTabScreen> {
                       await Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (content) => ProfileTabScreen(
+                              builder: (content) => BarterOrderScreen(
                                     /////////////////////////
                                     user: widget.user,
                                   )));
