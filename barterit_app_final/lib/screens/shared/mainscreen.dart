@@ -1,8 +1,8 @@
 import 'package:barterit_app_final/models/user.dart';
-import 'package:barterit_app_final/screens/hometabscreen.dart';
-import 'package:barterit_app_final/screens/profilescreen.dart';
-import 'package:barterit_app_final/screens/profiletabscreen.dart';
-import 'package:barterit_app_final/screens/sellertabscreen.dart';
+import 'package:barterit_app_final/screens/buyer/hometabscreen.dart';
+import 'package:barterit_app_final/screens/seller/sellertabscreen.dart';
+import 'package:barterit_app_final/screens/shared/profilescreen.dart';
+import 'package:barterit_app_final/screens/shared/profiletabscreen.dart';
 
 import 'package:flutter/material.dart';
 

@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:barterit_app_final/screens/shared/mainscreen.dart';
+
 import 'models/user.dart';
 import 'package:barterit_app_final/myconfig.dart';
-import 'package:barterit_app_final/screens/mainscreen.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';

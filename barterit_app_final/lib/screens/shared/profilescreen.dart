@@ -1,5 +1,5 @@
-import 'package:barterit_app_final/screens/loginscreen.dart';
-import 'package:barterit_app_final/screens/registrationscreen.dart';
+import 'package:barterit_app_final/screens/shared/loginscreen.dart';
+import 'package:barterit_app_final/screens/shared/registrationscreen.dart';
 
 import 'package:flutter/material.dart';
 

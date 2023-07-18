@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:barterit_app_final/models/user.dart';
 import 'package:barterit_app_final/myconfig.dart';
-import 'package:barterit_app_final/screens/registrationscreen.dart';
+import 'package:barterit_app_final/screens/shared/registrationscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -195,7 +195,8 @@ class _LoginScreenState extends State<LoginScreen> {
     String pass = _passEditingController.text;
     print(pass);
     try {
-      http.post(Uri.parse("${MyConfig().SERVER}/barterit_final/php/login_user.php"),
+      http.post(
+          Uri.parse("${MyConfig().SERVER}/barterit_final/php/login_user.php"),
           body: {
             "email": email,
             "password": pass,

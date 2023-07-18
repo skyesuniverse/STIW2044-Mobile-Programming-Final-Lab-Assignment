@@ -1,17 +1,20 @@
 import 'dart:io';
-import 'package:barterit_app_final/screens/profiletabscreen.dart';
+import 'package:barterit_app_final/models/item.dart';
+import 'package:barterit_app_final/models/user.dart';
+import 'package:barterit_app_final/myconfig.dart';
+import 'package:barterit_app_final/screens/shared/profiletabscreen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import '../models/item.dart';
-import '../models/user.dart';
-import '../myconfig.dart';
 
 class ItemDetailsScreen extends StatefulWidget {
   final Item useritem;
   final User user;
   const ItemDetailsScreen(
-      {super.key, required this.useritem, required this.user});
+      {super.key,
+      required this.useritem,
+      required this.user,
+      required int page});
 
   @override
   State<ItemDetailsScreen> createState() => _ItemDetailsScreenState();

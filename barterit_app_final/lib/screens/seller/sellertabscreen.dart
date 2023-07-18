@@ -3,8 +3,9 @@ import 'dart:developer';
 import 'package:barterit_app_final/models/item.dart';
 import 'package:barterit_app_final/models/user.dart';
 import 'package:barterit_app_final/myconfig.dart';
-import 'package:barterit_app_final/screens/edititemdetailsscreen.dart';
-import 'package:barterit_app_final/screens/newitemscreen.dart';
+import 'package:barterit_app_final/screens/seller/edititemdetailsscreen.dart';
+import 'package:barterit_app_final/screens/seller/newitemscreen.dart';
+import 'package:barterit_app_final/screens/shared/profiletabscreen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -22,7 +23,9 @@ class _SellerTabScreenState extends State<SellerTabScreen> {
   String maintitle = 'Seller';
   late double screenHeight, screenWidth;
   late int axiscount = 2;
+  late List<Widget> tabchildren;
   List<Item> itemList = <Item>[];
+  String status = "Loading...";
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
   TextEditingController searchController = TextEditingController();
@@ -60,16 +63,52 @@ class _SellerTabScreenState extends State<SellerTabScreen> {
         appBar: AppBar(
           title: Text(maintitle),
           actions: [
-            IconButton(
-                onPressed: () {
-                  showsearchDialog();
-                },
-                icon: const Icon(Icons.search))
+            itemList.isEmpty
+                ? Center()
+                :
+                // IconButton(
+                //     onPressed: () {
+                //       showsearchDialog();
+                //     },
+                //     icon: const Icon(Icons.search))
+                PopupMenuButton(
+                    // add icon, by default "3 dot" icon
+                    // icon: Icon(Icons.book)
+                    itemBuilder: (context) {
+                    return [
+                      const PopupMenuItem<int>(
+                        value: 0,
+                        child: Text("Barter Order"),
+                      ),
+                      const PopupMenuItem<int>(
+                        value: 1,
+                        child: Text("New"),
+                      ),
+                    ];
+                  }, onSelected: (value) async {
+                    if (value == 0) {
+                      if (widget.user.id.toString() == "na") {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content:
+                                    Text("Please login/register an account")));
+                        return;
+                      }
+                      await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (content) => ProfileTabScreen(
+                                    /////////////////////////
+                                    user: widget.user,
+                                  )));
+                    } else if (value == 1) {
+                    } else if (value == 2) {}
+                  }),
           ],
         ),
         body: itemList.isEmpty
-            ? const Center(
-                child: Text("No Data"),
+            ? Center(
+                child: Text(status),
               )
             : Column(
                 children: [
@@ -79,7 +118,7 @@ class _SellerTabScreenState extends State<SellerTabScreen> {
                     alignment: Alignment.center,
                     child: Text(
                       "${itemList.length} Item Found",
-                      style: const TextStyle(color: Colors.white, fontSize: 18),
+                      style: const TextStyle(color: Colors.white, fontSize: 16),
                     ),
                   ),
                   Expanded(
@@ -146,13 +185,18 @@ class _SellerTabScreenState extends State<SellerTabScreen> {
               ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            await Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (content) => NewItemScreen(
-                          user: widget.user,
-                        )));
-            loadsellerItems();
+            if (widget.user.id != "na") {
+              await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (content) => NewItemScreen(
+                            user: widget.user,
+                          )));
+              loadsellerItems();
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text("Please login/register an account")));
+            }
           },
           child: const Text(
             "+",
@@ -167,6 +211,7 @@ class _SellerTabScreenState extends State<SellerTabScreen> {
     if (widget.user.id == "na") {
       setState(() {
         // titlecenter = "Unregistered User";
+        status = "Please Login first...";
       });
       return;
     }
@@ -185,6 +230,9 @@ class _SellerTabScreenState extends State<SellerTabScreen> {
             itemList.add(Item.fromJson(v));
           });
           print(itemList[0].itemName);
+        } else {
+          status = "Please Login first...";
+          setState(() {});
         }
         setState(() {});
       }

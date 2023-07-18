@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:barterit_app_final/models/item.dart';
+import 'package:barterit_app_final/models/user.dart';
+import 'package:barterit_app_final/myconfig.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import '../models/user.dart';
-import '../myconfig.dart';
 
 class EditItemDetailsScreen extends StatefulWidget {
   final User user;

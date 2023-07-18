@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:barterit_app_final/models/item.dart';
+import 'package:barterit_app_final/models/user.dart';
 import 'package:barterit_app_final/myconfig.dart';
-import 'package:barterit_app_final/screens/itemdetailsscreen.dart';
+import 'package:barterit_app_final/screens/buyer/itemdetailsscreen.dart';
+import 'package:barterit_app_final/screens/shared/loginscreen.dart';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import '../models/item.dart';
-import '../models/user.dart';
 
 class HomeTabScreen extends StatefulWidget {
   final User user;
@@ -31,7 +33,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
   @override
   void initState() {
     super.initState();
-    loadItems(1);
+    loadItems();
     print('Home');
   }
 
@@ -84,18 +86,48 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
                           return Card(
                             child: InkWell(
                               onTap: () async {
-                                Item useritem =
-                                    Item.fromJson(itemList[index].toJson());
-                                await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (content) => ItemDetailsScreen(
-                                      user: widget.user,
-                                      useritem: useritem,
+                                // widget.user.id.toString() == "na"
+                                if (widget.user.id == "na") {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text('Login Required'),
+                                        content: const Text(
+                                            "Please log in to view item details."),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                              Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      LoginScreen(), // Replace with the login screen widget
+                                                ),
+                                              );
+                                            },
+                                            child: Text('OK'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                } else {
+                                  Item useritem =
+                                      Item.fromJson(itemList[index].toJson());
+                                  await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (content) => ItemDetailsScreen(
+                                        user: widget.user,
+                                        useritem: useritem,
+                                        page: curpage,
+                                      ),
                                     ),
-                                  ),
-                                );
-                                loadItems(1);
+                                  );
+                                  loadItems();
+                                }
                               },
                               child: Column(
                                 children: [
@@ -152,7 +184,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
                     return TextButton(
                         onPressed: () {
                           curpage = index + 1;
-                          loadItems(index + 1);
+                          loadItems();
                         },
                         child: Text(
                           (index + 1).toString(),
@@ -168,7 +200,8 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
     );
   }
 
-  void loadItems(int page) {
+  // void loadItems(int page) {
+  void loadItems() {
     // showDialog(
     //   context: context,
     //   builder: (BuildContext context) {
@@ -181,10 +214,10 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
     http.post(
         Uri.parse("${MyConfig().SERVER}/barterit_final/php/load_items.php"),
         // body: {}).then((response) {
-        body: {"pageno": page.toString()}).then((response) {
+        body: {"pageno": curpage.toString()}).then((response) {
       // code for pagination purpose above is ori code without pagination
       //print(response.body);
-      log(response.body);
+      // log(response.body);
       itemList.clear();
       if (response.statusCode == 200) {
         var jsondata = jsonDecode(response.body);
