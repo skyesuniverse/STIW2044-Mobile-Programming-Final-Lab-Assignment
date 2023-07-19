@@ -1,12 +1,26 @@
+import 'dart:convert';
+
+import 'package:barterit_app_final/models/item.dart';
 import 'package:barterit_app_final/models/user.dart';
+import 'package:barterit_app_final/myconfig.dart';
 import 'package:barterit_app_final/screens/buyer/payment/paymentsuccessscreen.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 
 class PaymentScreen extends StatefulWidget {
   final User user;
-  const PaymentScreen({super.key, required this.user});
+  final Item useritem;
+  final double finaltotalPrice; // New parameter
+  final int userQuantity; // New parameter
+  const PaymentScreen({
+    Key? key,
+    required this.user,
+    required this.finaltotalPrice, // Pass the total price
+    required this.userQuantity,
+    required this.useritem,
+  }) : super(key: key);
 
   @override
   State<PaymentScreen> createState() => _PaymentScreenState();
@@ -94,14 +108,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   // side: BorderSide(color: Colors.black),
                 ),
               ),
-              onPressed: () async {
-                await Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (content) => PaymentSuccessScreen(
-                              user: widget.user,
-                              // finaltotalprice: finaltotalprice,
-                            )));
+              onPressed: () {
+                // Navigator.of(context).pop();
+                processPayment();
+                //registerUser();
               },
               child: Text(
                 "Pay",
@@ -110,5 +120,95 @@ class _PaymentScreenState extends State<PaymentScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> processPayment() async {
+     String orderlat = widget.useritem.itemLocality.toString();
+    String orderlng = widget.useritem.itemLocality.toString();
+    // Make an API call to your server to handle the payment.
+    final url =
+        "${MyConfig().SERVER}/barterit_final/php/payment.php"; // Replace with your server URL.
+    final response = await http.get(
+      Uri.parse(
+          '$url?userid=${widget.user.id}&amount=${widget.finaltotalPrice}&email=${widget.user.email}&name=${widget.user.name}'),
+    );
+
+    if (response.statusCode == 200) {
+      // Payment was successful, and you received a response from the server.
+      // Process the response as needed.
+      final responseData = json.decode(response.body);
+
+      // Example handling for success
+      if (responseData['status'] == 'success') {
+        // Show a success dialog or navigate to the next screen.
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Payment Success'),
+              content: Text('Your payment was successful.'),
+              actions: <Widget>[
+                ElevatedButton(
+                  onPressed: () {
+                    // Close the dialog and navigate to the PaymentSuccessScreen.
+                    Navigator.pop(context);
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (content) => PaymentSuccessScreen(
+                          user: widget.user,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        // Show an error dialog or handle the payment failure.
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Payment Failed'),
+              content: Text('Sorry, your payment failed. Please try again.'),
+              actions: <Widget>[
+                ElevatedButton(
+                  onPressed: () {
+                    // Close the dialog and stay on the current screen.
+                    Navigator.pop(context);
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    } else {
+      // Error occurred in making the payment request to the server.
+      // Show an error dialog or handle the situation accordingly.
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('An error occurred. Please try again later.'),
+            actions: <Widget>[
+              ElevatedButton(
+                onPressed: () {
+                  // Close the dialog and stay on the current screen.
+                  Navigator.pop(context);
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 }

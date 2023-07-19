@@ -549,7 +549,9 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                   MaterialPageRoute(
                                       builder: (content) => PaymentScreen(
                                             user: widget.user,
-                                            // finaltotalprice: finaltotalprice,
+                                            userQuantity: userqty,
+                                            finaltotalPrice: finaltotalprice,
+                                            useritem: widget.useritem,
                                           )));
                             },
                             child: Text(
