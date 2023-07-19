@@ -123,92 +123,119 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   Future<void> processPayment() async {
-     String orderlat = widget.useritem.itemLocality.toString();
-    String orderlng = widget.useritem.itemLocality.toString();
-    // Make an API call to your server to handle the payment.
-    final url =
-        "${MyConfig().SERVER}/barterit_final/php/payment.php"; // Replace with your server URL.
-    final response = await http.get(
-      Uri.parse(
-          '$url?userid=${widget.user.id}&amount=${widget.finaltotalPrice}&email=${widget.user.email}&name=${widget.user.name}'),
-    );
+    String orderpaid = widget.finaltotalPrice.toString();
+    String buyerid = widget.user.id.toString();
+    String sellerid = widget.useritem.userId.toString();
+    String orderlat = widget.useritem.itemLat.toString();
+    String orderlng = widget.useritem.itemLong.toString();
+    http.post(Uri.parse("${MyConfig().SERVER}/barterit_final/php/payment.php"),
+        body: {
+          "orderpaid": orderpaid,
+          "buyerid": buyerid,
+          "sellerid": sellerid,
+          "orderlat": orderlat,
+          "orderlng": orderlng,
+        }).then((response) {
+      //print(response.body);
+      //print(response.statusCode);
 
-    if (response.statusCode == 200) {
-      // Payment was successful, and you received a response from the server.
-      // Process the response as needed.
-      final responseData = json.decode(response.body);
+      var jsondata = jsonDecode(response.body);
+      print(jsondata);
 
-      // Example handling for success
-      if (responseData['status'] == 'success') {
-        // Show a success dialog or navigate to the next screen.
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text('Payment Success'),
-              content: Text('Your payment was successful.'),
-              actions: <Widget>[
-                ElevatedButton(
-                  onPressed: () {
-                    // Close the dialog and navigate to the PaymentSuccessScreen.
-                    Navigator.pop(context);
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (content) => PaymentSuccessScreen(
-                          user: widget.user,
-                        ),
-                      ),
-                    );
-                  },
-                  child: Text('OK'),
-                ),
-              ],
-            );
-          },
+      //var jsondata= json.decode(json.encode(response.body));
+
+      if (response.statusCode == 200 && jsondata['status'] == 'success') {
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //     const SnackBar(content: Text("Registration Success")));
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (content) => PaymentSuccessScreen(
+              user: widget.user,
+            ),
+          ),
         );
       } else {
-        // Show an error dialog or handle the payment failure.
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text('Payment Failed'),
-              content: Text('Sorry, your payment failed. Please try again.'),
-              actions: <Widget>[
-                ElevatedButton(
-                  onPressed: () {
-                    // Close the dialog and stay on the current screen.
-                    Navigator.pop(context);
-                  },
-                  child: Text('OK'),
-                ),
-              ],
-            );
-          },
-        );
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text("Registration Failed")));
       }
-    } else {
-      // Error occurred in making the payment request to the server.
-      // Show an error dialog or handle the situation accordingly.
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Error'),
-            content: Text('An error occurred. Please try again later.'),
-            actions: <Widget>[
-              ElevatedButton(
-                onPressed: () {
-                  // Close the dialog and stay on the current screen.
-                  Navigator.pop(context);
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
-    }
+
+      // if (response.statusCode == 200 && jsondata['status'] == 'success') {
+      //   // Payment was successful, and you received a response from the server.
+      //   // Process the response as needed.
+      //   final responseData = json.decode(response.body);
+
+      // Example handling for success
+      //   if (responseData['status'] == 'success') {
+      //     // Show a success dialog or navigate to the next screen.
+      //     showDialog(
+      //       context: context,
+      //       builder: (context) {
+      //         return AlertDialog(
+      //           title: Text('Payment Success'),
+      //           content: Text('Your payment was successful.'),
+      //           actions: <Widget>[
+      //             ElevatedButton(
+      //               onPressed: () {
+      //                 // Close the dialog and navigate to the PaymentSuccessScreen.
+      //                 Navigator.pop(context);
+      //                 Navigator.pushReplacement(
+      //                   context,
+      //                   MaterialPageRoute(
+      //                     builder: (content) => PaymentSuccessScreen(
+      //                       user: widget.user,
+      //                     ),
+      //                   ),
+      //                 );
+      //               },
+      //               child: Text('OK'),
+      //             ),
+      //           ],
+      //         );
+      //       },
+      //     );
+      //   } else {
+      //     // Show an error dialog or handle the payment failure.
+      //     showDialog(
+      //       context: context,
+      //       builder: (context) {
+      //         return AlertDialog(
+      //           title: Text('Payment Failed'),
+      //           content: Text('Sorry, your payment failed. Please try again.'),
+      //           actions: <Widget>[
+      //             ElevatedButton(
+      //               onPressed: () {
+      //                 // Close the dialog and stay on the current screen.
+      //                 Navigator.pop(context);
+      //               },
+      //               child: Text('OK'),
+      //             ),
+      //           ],
+      //         );
+      //       },
+      //     );
+      //   }
+      // } else {
+      //   // Error occurred in making the payment request to the server.
+      //   // Show an error dialog or handle the situation accordingly.
+      //   showDialog(
+      //     context: context,
+      //     builder: (context) {
+      //       return AlertDialog(
+      //         title: Text('Error'),
+      //         content: Text('An error occurred. Please try again later.'),
+      //         actions: <Widget>[
+      //           ElevatedButton(
+      //             onPressed: () {
+      //               // Close the dialog and stay on the current screen.
+      //               Navigator.pop(context);
+      //             },
+      //             child: Text('OK'),
+      //           ),
+      //         ],
+      //       );
+      //     },
+      //   );
+    });
   }
 }
