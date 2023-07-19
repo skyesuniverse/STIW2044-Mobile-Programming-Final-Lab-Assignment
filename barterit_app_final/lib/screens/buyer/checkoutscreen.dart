@@ -3,6 +3,7 @@ import 'package:barterit_app_final/models/item.dart';
 import 'package:barterit_app_final/models/user.dart';
 import 'package:barterit_app_final/myconfig.dart';
 import 'package:barterit_app_final/screens/buyer/billscreen.dart';
+import 'package:barterit_app_final/screens/buyer/payment/paymentscreen.dart';
 import 'package:barterit_app_final/screens/shared/profiletabscreen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -546,9 +547,9 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                               await Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (content) => BillScreen(
+                                      builder: (content) => PaymentScreen(
                                             user: widget.user,
-                                            finaltotalprice: finaltotalprice,
+                                            // finaltotalprice: finaltotalprice,
                                           )));
                             },
                             child: Text(
