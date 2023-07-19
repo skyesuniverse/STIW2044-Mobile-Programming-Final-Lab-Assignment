@@ -128,6 +128,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
     String sellerid = widget.useritem.userId.toString();
     String orderlat = widget.useritem.itemLat.toString();
     String orderlng = widget.useritem.itemLong.toString();
+    String itemid = widget.useritem.itemId.toString();
+    String orderqty = widget.userQuantity.toString();
     http.post(Uri.parse("${MyConfig().SERVER}/barterit_final/php/payment.php"),
         body: {
           "orderpaid": orderpaid,
@@ -135,9 +137,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
           "sellerid": sellerid,
           "orderlat": orderlat,
           "orderlng": orderlng,
+          "itemid": itemid,
+          "orderqty": orderqty,
         }).then((response) {
-      //print(response.body);
-      //print(response.statusCode);
+      print(response.body);
+      print(response.statusCode);
 
       var jsondata = jsonDecode(response.body);
       print(jsondata);
