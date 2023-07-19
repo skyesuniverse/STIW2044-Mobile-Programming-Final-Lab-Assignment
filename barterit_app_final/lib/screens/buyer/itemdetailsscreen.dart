@@ -25,6 +25,12 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
   late double screenHeight, screenWidth, cardwitdh;
   List<File?> selectedImages = [null, null, null];
 
+  int qty = 0;
+  int userqty = 1;
+  double totalprice = 0.0;
+  double singleprice = 0.0;
+  int curpage = 1;
+
   @override
   void initState() {
     super.initState();
@@ -32,12 +38,6 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
     totalprice = double.parse(widget.useritem.itemPrice.toString());
     singleprice = double.parse(widget.useritem.itemPrice.toString());
   }
-
-  int qty = 0;
-  int userqty = 1;
-  double totalprice = 0.0;
-  double singleprice = 0.0;
-  int curpage = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -297,6 +297,11 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                     //   style: const TextStyle(
                     //       fontSize: 24, fontWeight: FontWeight.bold),
                     // ),
+                    // Text(
+                    //   "RM ${totalprice.toStringAsFixed(2)}",
+                    //   style: const TextStyle(
+                    //       fontSize: 24, fontWeight: FontWeight.bold),
+                    // ),
                     ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.only(
@@ -313,6 +318,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                         ),
                         onPressed: () {
                           barteritdialog();
+                          print(totalprice);
                         },
                         child: const Text(
                           "Barter It",
@@ -327,12 +333,25 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
   }
 
   void barteritdialog() {
+    if (widget.user.id.toString() == widget.useritem.userId.toString()) {
+      // Fluttertoast.showToast(
+      //     msg: "User cannot add own catch",
+      //     toastLength: Toast.LENGTH_SHORT,
+      //     gravity: ToastGravity.CENTER,
+      //     timeInSecForIosWeb: 1,
+      //     fontSize: 16.0);
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("User cannot barter own item")));
+      return;
+    }
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (content) => CheckOutScreen(
                   user: widget.user,
                   useritem: widget.useritem,
+                  totalPrice: totalprice, // Pass the total price
+                  userQuantity: userqty, // Pass the user quantity
                   page: curpage,
                 )));
   }

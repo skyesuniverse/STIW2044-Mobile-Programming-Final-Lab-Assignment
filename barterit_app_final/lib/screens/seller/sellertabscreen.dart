@@ -30,6 +30,10 @@ class _SellerTabScreenState extends State<SellerTabScreen> {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
   TextEditingController searchController = TextEditingController();
+//code below is for pagination
+  int numofpage = 1, curpage = 1;
+  int numberofresult = 0;
+  var color;
 
   @override
   void initState() {
@@ -181,6 +185,35 @@ class _SellerTabScreenState extends State<SellerTabScreen> {
                         );
                       }),
                     ),
+                  ), ////section for pagination
+                  SizedBox(
+                    height: 28,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: numofpage,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        //build the list for textbutton with scroll
+                        if ((curpage - 1) == index) {
+                          //set current page number active
+                          color = Colors.black;
+                        } else {
+                          color = Colors.black38;
+                        }
+                        return TextButton(
+                            onPressed: () {
+                              curpage = index + 1;
+                              loadsellerItems();
+                            },
+                            child: Text(
+                              (index + 1).toString(),
+                              style: TextStyle(
+                                  color: color,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold),
+                            ));
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -219,13 +252,19 @@ class _SellerTabScreenState extends State<SellerTabScreen> {
 
     http.post(
         Uri.parse("${MyConfig().SERVER}/barterit_final/php/load_items.php"),
-        body: {"userid": widget.user.id}).then((response) {
+        body: {
+          'userid': widget.user.id,
+          'pageno': curpage.toString()
+        }).then((response) {
       print(response.body);
+      print(widget.user.id);
       //log(response.body);
       itemList.clear();
       if (response.statusCode == 200) {
         var jsondata = jsonDecode(response.body);
         if (jsondata['status'] == "success") {
+          numofpage = int.parse(jsondata['numofpage']); //get number of pages
+          numberofresult = int.parse(jsondata['numberofresult']);
           var extractdata = jsondata['data'];
           extractdata['items'].forEach((v) {
             itemList.add(Item.fromJson(v));
