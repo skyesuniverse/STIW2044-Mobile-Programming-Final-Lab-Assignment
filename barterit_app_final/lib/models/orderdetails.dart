@@ -1,4 +1,4 @@
-class Order {
+class OrderDetails {
   String? orderId;
   String? orderBill;
   String? orderPaid;
@@ -10,8 +10,9 @@ class Order {
   String? orderLng;
   String? itemId;
   String? orderQty;
+  String? itemName;
 
-  Order(
+  OrderDetails(
       {this.orderId,
       this.orderBill,
       this.orderPaid,
@@ -22,9 +23,10 @@ class Order {
       this.orderLat,
       this.orderLng,
       this.itemId,
-      this.orderQty});
+      this.orderQty,
+      this.itemName});
 
-  Order.fromJson(Map<String, dynamic> json) {
+  OrderDetails.fromJson(Map<String, dynamic> json) {
     orderId = json['order_id'];
     orderBill = json['order_bill'];
     orderPaid = json['order_paid'];
@@ -36,6 +38,7 @@ class Order {
     orderLng = json['order_lng'];
     itemId = json['item_id'];
     orderQty = json['order_qty'];
+    itemName = json['item_name'];
   }
 
   Map<String, dynamic> toJson() {
@@ -51,6 +54,7 @@ class Order {
     data['order_lng'] = orderLng;
     data['item_id'] = itemId;
     data['order_qty'] = orderQty;
+    data['item_name'] = itemName;
     return data;
   }
 }

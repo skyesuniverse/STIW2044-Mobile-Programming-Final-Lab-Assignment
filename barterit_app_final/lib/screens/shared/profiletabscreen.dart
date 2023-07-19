@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:barterit_app_final/screens/buyer/buyerorderscreen.dart';
 import 'package:http/http.dart' as http;
 import 'package:barterit_app_final/models/user.dart';
 import 'package:barterit_app_final/myconfig.dart';
@@ -197,9 +198,11 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
                 dense: true,
                 // tileColor: Colors.amber,
                 leading: Icon(Icons.shopping_bag_outlined),
-                title: Text('My Purchase'),
+                title: Text('My Orders'),
                 trailing: Icon(Icons.arrow_forward_ios_rounded),
-                onTap: () {},
+                onTap: () {
+                  viewMyOrder();
+                },
               ),
               Divider(),
               SizedBox(height: screenHeight * 0.0002),
@@ -645,6 +648,15 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
             .showSnackBar(const SnackBar(content: Text("Change Failed")));
       }
     });
+  }
+
+  void viewMyOrder() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (content) => BuyerOrderScreen(
+                  user: widget.user,
+                )));
   }
 
   // onEditProfile() {

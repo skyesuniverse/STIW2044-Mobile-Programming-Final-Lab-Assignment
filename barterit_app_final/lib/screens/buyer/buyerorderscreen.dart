@@ -1,29 +1,30 @@
 import 'dart:convert';
-
+import 'dart:developer';
 import 'package:barterit_app_final/models/order.dart';
 import 'package:barterit_app_final/models/user.dart';
 import 'package:barterit_app_final/myconfig.dart';
-import 'package:barterit_app_final/screens/seller/barterorderdetailsscreen.dart';
+import 'package:barterit_app_final/screens/buyer/buyerorderdetailsscreen.dart';
 import 'package:flutter/material.dart';
+
 import 'package:http/http.dart' as http;
 
-class BarterOrderScreen extends StatefulWidget {
+class BuyerOrderScreen extends StatefulWidget {
   final User user;
-  const BarterOrderScreen({super.key, required this.user});
+  const BuyerOrderScreen({super.key, required this.user});
 
   @override
-  State<BarterOrderScreen> createState() => _BarterOrderScreenState();
+  State<BuyerOrderScreen> createState() => _BuyerOrderScreenState();
 }
 
-class _BarterOrderScreenState extends State<BarterOrderScreen> {
-  String status = "Loading...";
-  List<Order> orderList = <Order>[];
+class _BuyerOrderScreenState extends State<BuyerOrderScreen> {
   late double screenHeight, screenWidth, cardwitdh;
 
+  String status = "Loading...";
+  List<Order> orderList = <Order>[];
   @override
   void initState() {
     super.initState();
-    loadbarterorders();
+    loadbuyerorders();
   }
 
   @override
@@ -31,7 +32,7 @@ class _BarterOrderScreenState extends State<BarterOrderScreen> {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: AppBar(title: const Text("Your Orders")),
+      appBar: AppBar(title: const Text("My Orders")),
       body: Container(
         child: orderList.isEmpty
             ? Center(
@@ -40,13 +41,14 @@ class _BarterOrderScreenState extends State<BarterOrderScreen> {
             : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Container(
+                  // SizedBox(
+                  //   width: screenWidth,
                   //   child: Padding(
-                  //     padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+                  //     padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
                   //     child: Row(
                   //       children: [
                   //         Flexible(
-                  //             flex: 8,
+                  //             flex: 7,
                   //             child: Row(
                   //               children: [
                   //                 const CircleAvatar(
@@ -66,12 +68,12 @@ class _BarterOrderScreenState extends State<BarterOrderScreen> {
                   //               ],
                   //             )),
                   //         Expanded(
-                  //           flex: 2,
+                  //           flex: 3,
                   //           child: Row(children: [
-                  //             // IconButton(
-                  //             //   icon: const Icon(Icons.notifications),
-                  //             //   onPressed: () {},
-                  //             // ),
+                  //             IconButton(
+                  //               icon: const Icon(Icons.notifications),
+                  //               onPressed: () {},
+                  //             ),
                   //             IconButton(
                   //               icon: const Icon(Icons.search),
                   //               onPressed: () {},
@@ -82,7 +84,6 @@ class _BarterOrderScreenState extends State<BarterOrderScreen> {
                   //     ),
                   //   ),
                   // ),
-                  // const Divider(),
                   Padding(
                     padding: const EdgeInsets.all(13.0),
                     child: Row(
@@ -116,13 +117,12 @@ class _BarterOrderScreenState extends State<BarterOrderScreen> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (content) =>
-                                            BarterOrderDetailsScreen(
+                                            BuyerOrderDetailsScreen(
                                               order: myorder,
                                             )));
-                                loadbarterorders();
+                                loadbuyerorders();
                               },
                               leading: CircleAvatar(
-                                  radius: 16,
                                   child: Text((index + 1).toString())),
                               title: Text(
                                   "Receipt: ${orderList[index].orderBill}"),
@@ -161,14 +161,14 @@ class _BarterOrderScreenState extends State<BarterOrderScreen> {
     );
   }
 
-  void loadbarterorders() {
+  
+  void loadbuyerorders() {
     http.post(
         Uri.parse(
-            "${MyConfig().SERVER}/barterit_final/php/load_barterorder.php"),
-        body: {"sellerid": widget.user.id}).then((response) {
+            "${MyConfig().SERVER}/barterit_final/php/load_buyerorder.php"),
+        body: {"buyerid": widget.user.id}).then((response) {
       print(response.body);
       print(response.statusCode);
-
       // log(response.body);
       //orderList.clear();
       if (response.statusCode == 200) {
@@ -181,11 +181,8 @@ class _BarterOrderScreenState extends State<BarterOrderScreen> {
           });
         } else {
           Navigator.of(context).pop();
-
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("Barter Order loaded fail")));
-          // status = "Please register an account first";
-          // setState(() {});
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text("No order found")));
         }
         setState(() {});
       }
