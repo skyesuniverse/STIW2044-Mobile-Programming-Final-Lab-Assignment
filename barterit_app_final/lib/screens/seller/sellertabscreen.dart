@@ -6,7 +6,6 @@ import 'package:barterit_app_final/myconfig.dart';
 import 'package:barterit_app_final/screens/seller/edititemdetailsscreen.dart';
 import 'package:barterit_app_final/screens/seller/newitemscreen.dart';
 import 'package:barterit_app_final/screens/seller/barterorder.dart';
-import 'package:barterit_app_final/screens/shared/profiletabscreen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -70,16 +69,7 @@ class _SellerTabScreenState extends State<SellerTabScreen> {
           actions: [
             itemList.isEmpty
                 ? Center()
-                :
-                // IconButton(
-                //     onPressed: () {
-                //       showsearchDialog();
-                //     },
-                //     icon: const Icon(Icons.search))
-                PopupMenuButton(
-                    // add icon, by default "3 dot" icon
-                    // icon: Icon(Icons.book)
-                    itemBuilder: (context) {
+                : PopupMenuButton(itemBuilder: (context) {
                     return [
                       const PopupMenuItem<int>(
                         value: 0,

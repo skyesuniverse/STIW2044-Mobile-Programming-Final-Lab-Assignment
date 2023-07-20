@@ -4,8 +4,6 @@ import 'package:barterit_app_final/models/item.dart';
 import 'package:barterit_app_final/models/user.dart';
 import 'package:barterit_app_final/myconfig.dart';
 import 'package:barterit_app_final/screens/buyer/itemdetailsscreen.dart';
-import 'package:barterit_app_final/screens/shared/loginscreen.dart';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -86,34 +84,6 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
                       return Card(
                         child: InkWell(
                           onTap: () async {
-                            // widget.user.id.toString() == "na"
-                            // if (widget.user.id == "na") {
-                            //   showDialog(
-                            //     context: context,
-                            //     builder: (BuildContext context) {
-                            //       return AlertDialog(
-                            //         title: const Text('Login Required'),
-                            //         content: const Text(
-                            //             "Please log in to view item details."),
-                            //         actions: [
-                            //           TextButton(
-                            //             onPressed: () {
-                            //               Navigator.of(context).pop();
-                            //               Navigator.pushReplacement(
-                            //                 context,
-                            //                 MaterialPageRoute(
-                            //                   builder: (context) =>
-                            //                       LoginScreen(), // Replace with the login screen widget
-                            //                 ),
-                            //               );
-                            //             },
-                            //             child: Text('OK'),
-                            //           ),
-                            //         ],
-                            //       );
-                            //     },
-                            //   );
-                            // } else {
                             Item useritem =
                                 Item.fromJson(itemList[index].toJson());
                             await Navigator.push(
@@ -202,24 +172,10 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
     );
   }
 
-  // void loadItems(int page) {
   void loadItems() {
-    // showDialog(
-    //   context: context,
-    //   builder: (BuildContext context) {
-    //     return const AlertDialog(
-    //       title: Text("Loading..."),
-    //       content: CircularProgressIndicator(),
-    //     );
-    //   },
-    // );
     http.post(
         Uri.parse("${MyConfig().SERVER}/barterit_final/php/load_items.php"),
-        // body: {}).then((response) {
         body: {"pageno": curpage.toString()}).then((response) {
-      // code for pagination purpose above is ori code without pagination
-      //print(response.body);
-      // log(response.body);
       itemList.clear();
       if (response.statusCode == 200) {
         var jsondata = jsonDecode(response.body);

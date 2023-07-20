@@ -1,5 +1,4 @@
 import 'package:barterit_app_final/models/user.dart';
-import 'package:barterit_app_final/screens/buyer/billscreen.dart';
 import 'package:barterit_app_final/screens/shared/mainscreen.dart';
 import 'package:barterit_app_final/screens/shared/profiletabscreen.dart';
 import 'package:flutter/material.dart';
@@ -47,7 +46,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadiusDirectional.circular(25.0),
-                    // side: BorderSide(color: Colors.black),
+
                   ),
                 ),
                 onPressed: () async {

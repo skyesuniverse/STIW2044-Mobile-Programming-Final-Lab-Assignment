@@ -40,7 +40,6 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
     super.initState();
     print('Profile');
 
-    // Update the hasProfileImage property of the User object
     if (widget.user.id != "0") {
       http
           .head(Uri.parse(
@@ -336,12 +335,6 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
 
   void _updateImageDialog() {
     if (widget.user.id == "0") {
-      // Fluttertoast.showToast(
-      //     msg: "Please login/register",
-      //     toastLength: Toast.LENGTH_SHORT,
-      //     gravity: ToastGravity.BOTTOM,
-      //     timeInSecForIosWeb: 1,
-      //     fontSize: 16.0);
       return;
     }
     showDialog(
@@ -456,8 +449,6 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
         );
 
         setState(() {});
-        // DefaultCacheManager manager = DefaultCacheManager();
-        // manager.emptyCache(); //clears all data in cache.
       } else {
         ScaffoldMessenger.of(context)
             .showSnackBar(const SnackBar(content: Text("Edit Failed")));
@@ -666,13 +657,4 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
       }
     });
   }
-
-  // onEditProfile() {
-  //   Navigator.push(
-  //       context,
-  //       MaterialPageRoute(
-  //           builder: (content) => EditProfileScreen(
-  //                 user: widget.user,
-  //               )));
-  // }
 }

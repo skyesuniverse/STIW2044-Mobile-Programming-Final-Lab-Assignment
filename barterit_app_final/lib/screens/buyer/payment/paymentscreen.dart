@@ -149,8 +149,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
       //var jsondata= json.decode(json.encode(response.body));
 
       if (response.statusCode == 200 && jsondata['status'] == 'success') {
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //     const SnackBar(content: Text("Registration Success")));
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(

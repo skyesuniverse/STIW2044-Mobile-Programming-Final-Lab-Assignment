@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:barterit_app_final/models/item.dart';
 import 'package:barterit_app_final/models/user.dart';
 import 'package:barterit_app_final/myconfig.dart';
-import 'package:barterit_app_final/screens/buyer/billscreen.dart';
 import 'package:barterit_app_final/screens/buyer/payment/paymentscreen.dart';
 import 'package:barterit_app_final/screens/shared/profiletabscreen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -57,7 +56,6 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
     screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        //////////////////////more form this seller
         actions: [
           IconButton(
             color: Colors.black,
@@ -67,7 +65,6 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                   MaterialPageRoute(
                       builder: (content) => ProfileTabScreen(
                             user: widget.user,
-                            // useritem: widget.usercatch,
                           )));
             },
             icon: const Icon(Icons.more_horiz_outlined),
@@ -181,8 +178,6 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                         ],
                                       ),
                                     ),
-                                    // Text(df.format(DateTime.parse(
-                                    //     widget.user.datereg.toString()))),
                                   ],
                                 ),
                               ],
@@ -191,7 +186,6 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                         ]),
                   ),
                 ),
-
                 Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(24, 16, 24, 4),
                   child: Row(
@@ -338,9 +332,6 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                         ]),
                   ),
                 ),
-                // Container(
-                //   child: Text("data"),
-                // ),
               ],
             ),
           ),

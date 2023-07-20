@@ -41,49 +41,6 @@ class _BuyerOrderScreenState extends State<BuyerOrderScreen> {
             : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // SizedBox(
-                  //   width: screenWidth,
-                  //   child: Padding(
-                  //     padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
-                  //     child: Row(
-                  //       children: [
-                  //         Flexible(
-                  //             flex: 7,
-                  //             child: Row(
-                  //               children: [
-                  //                 const CircleAvatar(
-                  //                   backgroundImage: AssetImage(
-                  //                     "assets/images/profile.png",
-                  //                   ),
-                  //                 ),
-                  //                 const SizedBox(
-                  //                   width: 8,
-                  //                 ),
-                  //                 Text(
-                  //                   "Hello ${widget.user.name}!",
-                  //                   style: const TextStyle(
-                  //                       fontSize: 16,
-                  //                       fontWeight: FontWeight.bold),
-                  //                 ),
-                  //               ],
-                  //             )),
-                  //         Expanded(
-                  //           flex: 3,
-                  //           child: Row(children: [
-                  //             IconButton(
-                  //               icon: const Icon(Icons.notifications),
-                  //               onPressed: () {},
-                  //             ),
-                  //             IconButton(
-                  //               icon: const Icon(Icons.search),
-                  //               onPressed: () {},
-                  //             ),
-                  //           ]),
-                  //         )
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
                   Padding(
                     padding: const EdgeInsets.all(13.0),
                     child: Row(
@@ -98,10 +55,6 @@ class _BuyerOrderScreenState extends State<BuyerOrderScreen> {
                           ),
                         ),
                         const Divider(),
-                        // IconButton(
-                        //   icon: const Icon(Icons.menu),
-                        //   onPressed: () {},
-                        // ),
                       ],
                     ),
                   ),
@@ -170,8 +123,7 @@ class _BuyerOrderScreenState extends State<BuyerOrderScreen> {
         body: {"buyerid": widget.user.id}).then((response) {
       print(response.body);
       print(response.statusCode);
-      // log(response.body);
-      //orderList.clear();
+
       if (response.statusCode == 200) {
         var jsondata = jsonDecode(response.body);
         if (jsondata['status'] == "success") {

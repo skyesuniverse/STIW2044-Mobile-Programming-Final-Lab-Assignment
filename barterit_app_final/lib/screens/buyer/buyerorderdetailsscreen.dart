@@ -8,8 +8,6 @@ import 'package:barterit_app_final/myconfig.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 
 class BuyerOrderDetailsScreen extends StatefulWidget {
   final Order order;
@@ -39,38 +37,12 @@ class _BuyerOrderDetailsScreenState extends State<BuyerOrderDetailsScreen> {
       datereg: "na",
       password: "na",
       otp: "na");
-  // var pickupLatLng;
-  // String picuploc = "Not selected";
-  // var _pickupPosition;
 
   @override
   void initState() {
     super.initState();
     loadbuyer();
     loadorderdetails();
-    //selectStatus = widget.order.orderStatus.toString();
-    // if (widget.order.orderLat.toString() == "") {
-    //   picuploc = "Not selected";
-    //   _pickupPosition = const CameraPosition(
-    //     target: LatLng(6.4301523, 100.4287586),
-    //     zoom: 12.4746,
-    //   );
-    // } else {
-    //   picuploc = "Selected";
-    //   pickupLatLng = LatLng(double.parse(widget.order.orderLat.toString()),
-    //       double.parse(widget.order.orderLng.toString()));
-    //   _pickupPosition = CameraPosition(
-    //     target: pickupLatLng,
-    //     zoom: 18.4746,
-    //   );
-    //   MarkerId markerId1 = const MarkerId("1");
-    //   markers.clear();
-    //   markers.add(Marker(
-    //     markerId: markerId1,
-    //     position: pickupLatLng,
-    //     icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-    //   ));
-    // }
   }
 
   @override
@@ -86,27 +58,6 @@ class _BuyerOrderDetailsScreenState extends State<BuyerOrderDetailsScreen> {
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(
               children: [
-                // Container(
-                //   margin: const EdgeInsets.all(4),
-                //   width: screenWidth * 0.2,
-                //   child: CircleAvatar(
-                //     radius: screenWidth * 0.1,
-                //     child: ClipOval(
-                //       child: CachedNetworkImage(
-                //         imageUrl:
-                //             "${MyConfig().SERVER}/barterit_final/assets/profileimages/${widget.order.buyerId}.png?",
-                //         placeholder: (context, url) => Image.asset(
-                //           pathAsset,
-                //           fit: BoxFit.contain,
-                //         ),
-                //         errorWidget: (context, url, error) => Image.network(
-                //           "${MyConfig().SERVER}/barterit_final/assets/profileimages/0.png",
-                //           scale: 2,
-                //         ),
-                //       ),
-                //     ),
-                //   ),
-                // ),
                 CircleAvatar(
                   radius: 32,
                   backgroundImage: CachedNetworkImageProvider(
@@ -237,23 +188,6 @@ class _BuyerOrderDetailsScreenState extends State<BuyerOrderDetailsScreen> {
                           style: TextStyle(
                               fontSize: 14, fontWeight: FontWeight.w800),
                         ),
-                        // DropdownButton(
-                        //   itemHeight: 60,
-                        //   value: selectStatus,
-                        //   onChanged: (newValue) {
-                        //     setState(() {
-                        //       selectStatus = newValue.toString();
-                        //     });
-                        //   },
-                        //   items: statusList.map((selectStatus) {
-                        //     return DropdownMenuItem(
-                        //       value: selectStatus,
-                        //       child: Text(
-                        //         selectStatus,
-                        //       ),
-                        //     );
-                        //   }).toList(),
-                        // ),
                         ElevatedButton(
                             onPressed: () {
                               submitStatus("Completed");
@@ -278,8 +212,6 @@ class _BuyerOrderDetailsScreenState extends State<BuyerOrderDetailsScreen> {
           "orderbill": widget.order.orderBill,
           "sellerid": widget.order.sellerId
         }).then((response) {
-      // log(response.body);
-      //orderList.clear();
       if (response.statusCode == 200) {
         var jsondata = jsonDecode(response.body);
         if (jsondata['status'] == "success") {
@@ -287,10 +219,7 @@ class _BuyerOrderDetailsScreenState extends State<BuyerOrderDetailsScreen> {
           extractdata['orderdetails'].forEach((v) {
             orderdetailsList.add(OrderDetails.fromJson(v));
           });
-        } else {
-          // status = "Please register an account first";
-          // setState(() {});
-        }
+        } else {}
         setState(() {});
       }
     });

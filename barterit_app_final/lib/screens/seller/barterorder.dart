@@ -40,49 +40,6 @@ class _BarterOrderScreenState extends State<BarterOrderScreen> {
             : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Container(
-                  //   child: Padding(
-                  //     padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
-                  //     child: Row(
-                  //       children: [
-                  //         Flexible(
-                  //             flex: 8,
-                  //             child: Row(
-                  //               children: [
-                  //                 const CircleAvatar(
-                  //                   backgroundImage: AssetImage(
-                  //                     "assets/images/profile.png",
-                  //                   ),
-                  //                 ),
-                  //                 const SizedBox(
-                  //                   width: 8,
-                  //                 ),
-                  //                 Text(
-                  //                   "Hello ${widget.user.name}!",
-                  //                   style: const TextStyle(
-                  //                       fontSize: 16,
-                  //                       fontWeight: FontWeight.bold),
-                  //                 ),
-                  //               ],
-                  //             )),
-                  //         Expanded(
-                  //           flex: 2,
-                  //           child: Row(children: [
-                  //             // IconButton(
-                  //             //   icon: const Icon(Icons.notifications),
-                  //             //   onPressed: () {},
-                  //             // ),
-                  //             IconButton(
-                  //               icon: const Icon(Icons.search),
-                  //               onPressed: () {},
-                  //             ),
-                  //           ]),
-                  //         )
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
-                  // const Divider(),
                   Padding(
                     padding: const EdgeInsets.all(13.0),
                     child: Row(
@@ -97,10 +54,6 @@ class _BarterOrderScreenState extends State<BarterOrderScreen> {
                           ),
                         ),
                         const Divider(),
-                        // IconButton(
-                        //   icon: const Icon(Icons.menu),
-                        //   onPressed: () {},
-                        // ),
                       ],
                     ),
                   ),
@@ -184,8 +137,6 @@ class _BarterOrderScreenState extends State<BarterOrderScreen> {
 
           ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("Barter Order loaded fail")));
-          // status = "Please register an account first";
-          // setState(() {});
         }
         setState(() {});
       }

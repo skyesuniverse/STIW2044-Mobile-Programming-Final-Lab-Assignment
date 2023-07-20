@@ -234,10 +234,6 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                         color: Colors.white54,
                         borderRadius: BorderRadius.circular(6),
                         shape: BoxShape.rectangle,
-                        // border: Border.all(
-                        //   color: Colors.black,
-                        //   width: 2,
-                        // ),
                       ),
                       child: IntrinsicHeight(
                         child: Row(
@@ -255,12 +251,6 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                                 },
                                 icon: const Icon(Icons.remove),
                                 iconSize: screenWidth * 0.06),
-                            // VerticalDivider(
-                            //   color: Color.fromARGB(255, 155, 154, 154),
-                            //   thickness: 1,
-                            //   endIndent: 10,
-                            //   indent: 8,
-                            // ),
                             SizedBox(
                               width: screenWidth * 0.01,
                             ),
@@ -270,12 +260,6 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                                   fontSize: 14, fontWeight: FontWeight.bold),
                             ),
                             SizedBox(width: screenWidth * 0.01),
-                            // VerticalDivider(
-                            //   color: Color.fromARGB(255, 155, 154, 154),
-                            //   thickness: 1,
-                            //   endIndent: 8,
-                            //   indent: 8,
-                            // ),
                             IconButton(
                               onPressed: () {
                                 if (userqty >= qty) {
@@ -294,16 +278,6 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                         ),
                       ),
                     ),
-                    // Text(
-                    //   "RM ${totalprice.toStringAsFixed(2)}",
-                    //   style: const TextStyle(
-                    //       fontSize: 24, fontWeight: FontWeight.bold),
-                    // ),
-                    // Text(
-                    //   "RM ${totalprice.toStringAsFixed(2)}",
-                    //   style: const TextStyle(
-                    //       fontSize: 24, fontWeight: FontWeight.bold),
-                    // ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.only(

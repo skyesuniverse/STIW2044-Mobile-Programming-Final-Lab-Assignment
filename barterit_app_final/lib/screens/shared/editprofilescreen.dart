@@ -37,8 +37,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.initState();
     _nameEditingController.text = widget.user.name.toString();
     _emailEditingController.text = widget.user.email.toString();
-    // _newpassEditingController.text = widget.user.itemQty.toString();
-    // _oldpassEditingController.text = widget.user.itemState.toString();
   }
 
   @override
@@ -48,15 +46,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        // leading: IconButton(
-        //   icon: Icon(Icons.arrow_back_ios_new_outlined, color: Colors.black),
-        //   onPressed: () => Navigator.of(context).pop(),
-        // ),
-        // backgroundColor: Colors.transparent,
-        // elevation: 0.0,
         title: const Text(
           "Edit Profile",
-          // style: TextStyle(color: Colors.black),
         ),
         centerTitle: true,
       ),
@@ -67,7 +58,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               padding: const EdgeInsets.all(16.0),
               child: Center(
                 child: Column(
-                  // crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     GestureDetector(
                       onTap: () {
@@ -79,30 +69,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           CircleAvatar(
                               radius: 55.0,
                               backgroundImage: CachedNetworkImageProvider(
-                                  "${MyConfig().SERVER}/barterit_final/assets/profileimages/${widget.user.id}.png?v=$val")
-
-                              // Image(
-                              //   image: _image == null
-                              //       ? AssetImage(pathAsset)
-                              //       : FileImage(_image!) as ImageProvider,
-                              //       // CachedNetworkImage(
-                              //   //     imageUrl:
-                              //   //         "${MyConfig().SERVER}/barterit_final/assets/profileimages/${widget.user.id}.png?v=$val",
-                              //   fit: BoxFit.contain,
-                              // ),
-                              // CachedNetworkImage(
-                              //     imageUrl:
-                              //         "${MyConfig().SERVER}/barterit_final/assets/profileimages/${widget.user.id}.png?v=$val",
-                              //     placeholder: (context, url) =>
-                              //         const LinearProgressIndicator(),
-                              //     errorWidget: (context, url, error) =>
-                              //         Image.network(
-                              //           "${MyConfig().SERVER}/barterit_final/assets/profileimages/0.png",
-                              //           scale: 2,
-                              //         )),
-                              // backgroundImage: AssetImage(
-                              //     'assets/images/loggedin_profile.jpg'),
-                              ),
+                                  "${MyConfig().SERVER}/barterit_final/assets/profileimages/${widget.user.id}.png?v=$val")),
                           Container(
                             decoration: BoxDecoration(
                               color: Colors.white,
@@ -130,8 +97,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     SizedBox(height: 16.0),
                     /////////////
                     TextFormField(
-                      enabled: false, //to restrict user from entering info
-                      // initialValue: '+1 123 456 7890',
+                      enabled: false,
                       controller: _emailEditingController,
                       validator: (val) => val!.isEmpty || (val.length < 3)
                           ? "Item name must be longer than 3"
@@ -169,30 +135,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                       ),
                     ),
-                    // /////////////
-                    // SizedBox(height: 16.0),
-                    // /////////////
-                    // TextFormField(
-                    //   initialValue: '+1 123 456 7890',
-                    //   decoration: InputDecoration(
-                    //     labelText: 'Phone',
-                    //     labelStyle: TextStyle(
-                    //       fontSize: 16.0,
-                    //       fontWeight: FontWeight.bold,
-                    //     ),
-                    //     border: UnderlineInputBorder(
-                    //       borderSide: BorderSide(
-                    //         color: Colors.black,
-                    //         width: 1.0,
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
-                    /////////////
+
                     SizedBox(height: 16.0),
                     /////////////
                     TextFormField(
-                      // initialValue: 'Enter Old Password',
                       controller: _oldpassEditingController,
                       obscureText: _oldpasswordVisible,
                       decoration: InputDecoration(
@@ -226,7 +172,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     SizedBox(height: 16.0),
                     /////////////
                     TextFormField(
-                      // initialValue: 'Enter Old Password',
                       controller: _newpassEditingController,
                       obscureText: _newpasswordVisible,
                       decoration: InputDecoration(
@@ -256,22 +201,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                       ),
                     ),
-                    // TextFormField(
-                    //   textInputAction: TextInputAction.next,
-                    //   validator: (val) => val!.isEmpty || (val.length < 3)
-                    //       ? "Item name must be longer than 3"
-                    //       : null,
-                    //   onFieldSubmitted: (v) {},
-                    //   // controller: _itemnameEditingController,
-                    //   keyboardType: TextInputType.text,
-                    //   decoration: const InputDecoration(
-                    //     labelText: 'John Doe',
-                    //     labelStyle: TextStyle(),
-                    //     focusedBorder: OutlineInputBorder(
-                    //       borderSide: BorderSide(width: 2.0),
-                    //     ),
-                    //   ),
-                    // ),
+
                     SizedBox(height: 20.0),
                     SizedBox(
                       width: screenWidth / 1.25,
@@ -294,18 +224,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   _updateImageDialog() {
     if (widget.user.id == "0") {
-      // Fluttertoast.showToast(
-      //     msg: "Please login/register",
-      //     toastLength: Toast.LENGTH_SHORT,
-      //     gravity: ToastGravity.BOTTOM,
-      //     timeInSecForIosWeb: 1,
-      //     fontSize: 16.0);
       return;
     }
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        // return object of type Dialog
         return AlertDialog(
             title: const Text(
               "Select from",
@@ -388,18 +311,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   Future<void> _updateProfileImage() async {
     if (_image == null) {
-      // Fluttertoast.showToast(
-      //     msg: "No image available",
-      //     toastLength: Toast.LENGTH_SHORT,
-      //     gravity: ToastGravity.BOTTOM,
-      //     timeInSecForIosWeb: 1,
-      //     fontSize: 16.0);
       return;
     }
     File imageFile = File(_image!.path);
     print(imageFile);
     String base64Image = base64Encode(imageFile.readAsBytesSync());
-    // print(base64Image);
+
     http.post(
         Uri.parse("${MyConfig().SERVER}/barterit_final/php/update_profile.php"),
         body: {
@@ -422,15 +339,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       }
     });
   }
-  ////////////////////////////////////
 
   void updateProfileDialog() {
-    // if (!_formKey.currentState!.validate()) {
-    //   ScaffoldMessenger.of(context)
-    //       .showSnackBar(const SnackBar(content: Text("Check your input")));
-    //   return;
-    // }
-
     showDialog(
       context: context,
       builder: (BuildContext context) {
