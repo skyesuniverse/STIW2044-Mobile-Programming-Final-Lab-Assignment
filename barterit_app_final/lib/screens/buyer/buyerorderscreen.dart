@@ -123,10 +123,12 @@ class _BuyerOrderScreenState extends State<BuyerOrderScreen> {
                                 loadbuyerorders();
                               },
                               leading: CircleAvatar(
+                                  radius: 16,
                                   child: Text((index + 1).toString())),
                               title: Text(
                                   "Receipt: ${orderList[index].orderBill}"),
-                              trailing: const Icon(Icons.arrow_forward),
+                              trailing: Icon(Icons.arrow_forward,
+                                  size: screenWidth * 0.06),
                               subtitle: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -161,7 +163,6 @@ class _BuyerOrderScreenState extends State<BuyerOrderScreen> {
     );
   }
 
-  
   void loadbuyerorders() {
     http.post(
         Uri.parse(

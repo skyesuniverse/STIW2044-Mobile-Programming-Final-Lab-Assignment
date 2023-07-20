@@ -87,47 +87,47 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
                             child: InkWell(
                               onTap: () async {
                                 // widget.user.id.toString() == "na"
-                                if (widget.user.id == "na") {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: const Text('Login Required'),
-                                        content: const Text(
-                                            "Please log in to view item details."),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                              Navigator.pushReplacement(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      LoginScreen(), // Replace with the login screen widget
-                                                ),
-                                              );
-                                            },
-                                            child: Text('OK'),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                } else {
-                                  Item useritem =
-                                      Item.fromJson(itemList[index].toJson());
-                                  await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (content) => ItemDetailsScreen(
-                                        user: widget.user,
-                                        useritem: useritem,
-                                        page: curpage,
-                                      ),
+                                // if (widget.user.id == "na") {
+                                //   showDialog(
+                                //     context: context,
+                                //     builder: (BuildContext context) {
+                                //       return AlertDialog(
+                                //         title: const Text('Login Required'),
+                                //         content: const Text(
+                                //             "Please log in to view item details."),
+                                //         actions: [
+                                //           TextButton(
+                                //             onPressed: () {
+                                //               Navigator.of(context).pop();
+                                //               Navigator.pushReplacement(
+                                //                 context,
+                                //                 MaterialPageRoute(
+                                //                   builder: (context) =>
+                                //                       LoginScreen(), // Replace with the login screen widget
+                                //                 ),
+                                //               );
+                                //             },
+                                //             child: Text('OK'),
+                                //           ),
+                                //         ],
+                                //       );
+                                //     },
+                                //   );
+                                // } else {
+                                Item useritem =
+                                    Item.fromJson(itemList[index].toJson());
+                                await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (content) => ItemDetailsScreen(
+                                      user: widget.user,
+                                      useritem: useritem,
+                                      page: curpage,
                                     ),
-                                  );
-                                  loadItems();
-                                }
+                                  ),
+                                );
+                                loadItems();
+                                // }
                               },
                               child: Column(
                                 children: [

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:barterit_app_final/screens/buyer/buyerorderscreen.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:http/http.dart' as http;
 import 'package:barterit_app_final/models/user.dart';
 import 'package:barterit_app_final/myconfig.dart';
@@ -24,6 +25,8 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _oldpasswordController = TextEditingController();
   final TextEditingController _newpasswordController = TextEditingController();
+
+  final TextEditingController _addressController = TextEditingController();
   late List<Widget> tabchildren;
   File? _image;
   var pathAsset = "assets/images/profile.png";
@@ -48,6 +51,13 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
         });
       });
     }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Clear the image cache when navigating back to the profile page
+    DefaultCacheManager().emptyCache();
   }
 
   @override
@@ -214,6 +224,18 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
                 trailing: Icon(Icons.arrow_forward_ios_rounded),
                 onTap: () {
                   _updateNameDialog();
+                },
+              ),
+              Divider(),
+              SizedBox(height: screenHeight * 0.0002),
+              ListTile(
+                dense: true,
+                // tileColor: Colors.amber,
+                leading: Icon(Icons.location_on_outlined),
+                title: Text('Add Address'),
+                trailing: Icon(Icons.arrow_forward_ios_rounded),
+                onTap: () {
+                  _addAddressDialog();
                 },
               ),
               Divider(),
@@ -409,7 +431,7 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
       if (response.statusCode == 200 && jsondata['status'] == 'success') {
         ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text("Name changed succesfully.")));
-        Navigator.pop(context);
+        // Navigator.pop(context);
         setState(() {
           widget.user.name = newname;
         });
@@ -533,6 +555,15 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
       if (response.statusCode == 200 && jsondata['status'] == 'success') {
         ScaffoldMessenger.of(context)
             .showSnackBar(const SnackBar(content: Text("Edit Success")));
+
+        // Append a timestamp as a query parameter to the image URL
+        val = DateTime.now().millisecondsSinceEpoch;
+
+        // Clear the image cache
+        DefaultCacheManager().removeFile(
+          "${MyConfig().SERVER}/barterit_final/assets/profileimages/${widget.user.id}.png?v=$val",
+        );
+
         setState(() {});
         // DefaultCacheManager manager = DefaultCacheManager();
         // manager.emptyCache(); //clears all data in cache.
@@ -657,6 +688,93 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
             builder: (content) => BuyerOrderScreen(
                   user: widget.user,
                 )));
+  }
+
+  void _addAddressDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20.0))),
+          title: const Text(
+            "Add Address?",
+            style: TextStyle(),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: _nameController,
+                decoration: InputDecoration(
+                  labelText: 'Enter your address',
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0)),
+                  contentPadding: EdgeInsets.symmetric(
+                    vertical: screenHeight * 0.02,
+                    horizontal: screenHeight * 0.02,
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your address';
+                  }
+                  return null;
+                },
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(
+                "Yes",
+                style: TextStyle(),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                String address = _addressController.text;
+                _addAddress(address);
+              },
+            ),
+            TextButton(
+              child: const Text(
+                "No",
+                style: TextStyle(),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _addAddress(String address) {
+    http.post(
+        Uri.parse("${MyConfig().SERVER}/barterit_final/php/update_profile.php"),
+        body: {
+          "userid": widget.user.id,
+          "addadress": address,
+        }).then((response) {
+      var jsondata = jsonDecode(response.body);
+      print(response.statusCode);
+      if (response.statusCode == 200 && jsondata['status'] == 'success') {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Address added succesfully.")));
+        // Navigator.pop(context);
+        setState(() {
+          widget.user.address = address;
+        });
+   
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text("Address added fail.")));
+        Navigator.pop(context);
+      }
+    });
   }
 
   // onEditProfile() {

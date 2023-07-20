@@ -28,6 +28,7 @@ class CheckOutScreen extends StatefulWidget {
 }
 
 class _CheckOutScreenState extends State<CheckOutScreen> {
+  final TextEditingController _addressController = TextEditingController();
   late double screenHeight, screenWidth, cardwitdh;
   List<File?> selectedImages = [null, null, null];
 
@@ -543,17 +544,21 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                 // side: BorderSide(color: Colors.black),
                               ),
                             ),
-                            onPressed: () async {
-                              await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (content) => PaymentScreen(
-                                            user: widget.user,
-                                            userQuantity: userqty,
-                                            finaltotalPrice: finaltotalprice,
-                                            useritem: widget.useritem,
-                                          )));
+                            onPressed: () {
+                              checkOutDialog();
+                              print(totalprice);
                             },
+                            // () async {
+                            //   await Navigator.push(
+                            //       context,
+                            //       MaterialPageRoute(
+                            //           builder: (content) => PaymentScreen(
+                            //                 user: widget.user,
+                            //                 userQuantity: userqty,
+                            //                 finaltotalPrice: finaltotalprice,
+                            //                 useritem: widget.useritem,
+                            //               )));
+                            // },
                             child: Text(
                               "Place Barter Order ( RM ${finaltotalprice.toStringAsFixed(2)} )",
                               style: TextStyle(
@@ -572,13 +577,80 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
     );
   }
 
-  void checkoutdialog() {
-    Navigator.push(
+  checkOutDialog() async {
+    if (widget.user.address == null) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return AlertDialog(
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0))),
+            title: const Text(
+              "Add a delivery address",
+              style: TextStyle(),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  controller: _addressController,
+                  decoration: InputDecoration(
+                    labelText: 'Enter your address',
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0)),
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: screenHeight * 0.02,
+                      horizontal: screenHeight * 0.02,
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your address';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text(
+                  "Yes",
+                  style: TextStyle(),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  String address = _addressController.text;
+                  _addAddress(address);
+                },
+              ),
+              TextButton(
+                child: const Text(
+                  "No",
+                  style: TextStyle(),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
+    await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (content) => ProfileTabScreen(
+            builder: (content) => PaymentScreen(
                   user: widget.user,
-                  // useritem: widget.usercatch,
+                  userQuantity: userqty,
+                  finaltotalPrice: finaltotalprice,
+                  useritem: widget.useritem,
                 )));
   }
+
+  void _addAddress(String address) {}
 }

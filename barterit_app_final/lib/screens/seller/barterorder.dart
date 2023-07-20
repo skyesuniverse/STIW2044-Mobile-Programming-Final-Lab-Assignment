@@ -31,7 +31,7 @@ class _BarterOrderScreenState extends State<BarterOrderScreen> {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: AppBar(title: const Text("Your Orders")),
+      appBar: AppBar(title: const Text("Barter Orders")),
       body: Container(
         child: orderList.isEmpty
             ? Center(
@@ -91,7 +91,7 @@ class _BarterOrderScreenState extends State<BarterOrderScreen> {
                         Padding(
                           padding: EdgeInsets.fromLTRB(8, 8, 15, 8),
                           child: Text(
-                            "Your Current Order/s (${orderList.length})",
+                            "My Current Barter Orders (${orderList.length})",
                             style: const TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.bold),
                           ),

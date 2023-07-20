@@ -3,6 +3,7 @@ import 'package:barterit_app_final/models/item.dart';
 import 'package:barterit_app_final/models/user.dart';
 import 'package:barterit_app_final/myconfig.dart';
 import 'package:barterit_app_final/screens/buyer/checkoutscreen.dart';
+import 'package:barterit_app_final/screens/shared/loginscreen.dart';
 import 'package:barterit_app_final/screens/shared/profiletabscreen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -22,6 +23,7 @@ class ItemDetailsScreen extends StatefulWidget {
 }
 
 class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
+  final TextEditingController _addressController = TextEditingController();
   late double screenHeight, screenWidth, cardwitdh;
   List<File?> selectedImages = [null, null, null];
 
@@ -333,6 +335,107 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
   }
 
   void barteritdialog() {
+    if (widget.user.id == "na") {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Login Required'),
+            content: const Text("Please log in to barter the item."),
+            actions: [
+              TextButton(
+                // onPressed: () async {
+                //   Navigator.of(context).pop();
+                //   Navigator.pushReplacement(
+                //     context,
+                //     MaterialPageRoute(
+                //       builder: (context) =>
+                //           LoginScreen(), // Replace with the login screen widget
+                //     ),
+                //   );
+                // },
+
+                onPressed: () async {
+                  await Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (content) => LoginScreen(),
+                    ),
+                    (route) =>
+                        false, // Remove all previous routes from the stack
+                  );
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+    // else if (widget.user.address == null) {
+    //   showDialog(
+    //     context: context,
+    //     builder: (BuildContext context) {
+    //       // return object of type Dialog
+    //       return AlertDialog(
+    //         shape: const RoundedRectangleBorder(
+    //             borderRadius: BorderRadius.all(Radius.circular(20.0))),
+    //         title: const Text(
+    //           "Add Address?",
+    //           style: TextStyle(),
+    //         ),
+    //         content: Column(
+    //           mainAxisSize: MainAxisSize.min,
+    //           children: [
+    //             TextFormField(
+    //               controller: _addressController,
+    //               decoration: InputDecoration(
+    //                 labelText: 'Enter your address',
+    //                 border: OutlineInputBorder(
+    //                     borderRadius: BorderRadius.circular(10.0)),
+    //                 contentPadding: EdgeInsets.symmetric(
+    //                   vertical: screenHeight * 0.02,
+    //                   horizontal: screenHeight * 0.02,
+    //                 ),
+    //               ),
+    //               validator: (value) {
+    //                 if (value == null || value.isEmpty) {
+    //                   return 'Please enter your address';
+    //                 }
+    //                 return null;
+    //               },
+    //             ),
+    //           ],
+    //         ),
+    //         actions: <Widget>[
+    //           TextButton(
+    //             child: const Text(
+    //               "Yes",
+    //               style: TextStyle(),
+    //             ),
+    //             onPressed: () {
+    //               Navigator.of(context).pop();
+    //               String address = _addressController.text;
+    //               _addAddress(address);
+    //             },
+    //           ),
+    //           TextButton(
+    //             child: const Text(
+    //               "No",
+    //               style: TextStyle(),
+    //             ),
+    //             onPressed: () {
+    //               Navigator.of(context).pop();
+    //             },
+    //           ),
+    //         ],
+    //       );
+    //     },
+    //   );
+    //   return;
+    // }
+
     if (widget.user.id.toString() == widget.useritem.userId.toString()) {
       // Fluttertoast.showToast(
       //     msg: "User cannot add own catch",
@@ -355,4 +458,6 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                   page: curpage,
                 )));
   }
+
+  void _addAddress(String address) {}
 }
