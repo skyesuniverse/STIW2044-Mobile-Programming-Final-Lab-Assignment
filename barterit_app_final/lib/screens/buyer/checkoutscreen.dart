@@ -329,17 +329,6 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                 checkOutDialog();
                                 print(widget.user.address);
                               },
-                              // () async {
-                              //   await Navigator.push(
-                              //       context,
-                              //       MaterialPageRoute(
-                              //           builder: (content) => PaymentScreen(
-                              //                 user: widget.user,
-                              //                 userQuantity: userqty,
-                              //                 finaltotalPrice: finaltotalprice,
-                              //                 useritem: widget.useritem,
-                              //               )));
-                              // },
                               child: Text(
                                 "Place Barter Order ( RM ${finaltotalprice.toStringAsFixed(2)} )",
                                 style: TextStyle(

@@ -346,7 +346,7 @@ class _BarterOrderDetailsScreenState extends State<BarterOrderDetailsScreen> {
                         ),
                         SizedBox(height: 4),
                         Text(
-                          "Delivery Address: ${widget.order.orderStatus}",
+                          "Delivery Address: ${user.address}",
                           style: TextStyle(fontSize: 14),
                         ),
                       ],

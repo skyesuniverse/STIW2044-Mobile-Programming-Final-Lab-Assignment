@@ -79,103 +79,97 @@ class _BuyerOrderDetailsScreenState extends State<BuyerOrderDetailsScreen> {
     screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(title: const Text("Order Details")),
-      body: Column(children: [
-        Flexible(
-          flex: 3,
-          // height: screenHeight / 5.5,
-          child: Card(
-              child: Row(
-            children: [
-              Container(
-                margin: const EdgeInsets.all(4),
-                width: screenWidth * 0.2,
-                child: CircleAvatar(
-                  radius: screenWidth * 0.1,
-                  child: ClipOval(
-                    child: CachedNetworkImage(
-                      imageUrl:
-                          "${MyConfig().SERVER}/barterit_final/assets/profileimages/${widget.order.buyerId}.png?",
-                      placeholder: (context, url) => Image.asset(
-                        pathAsset,
-                        fit: BoxFit.contain,
-                      ),
-                      errorWidget: (context, url, error) => Image.network(
-                        "${MyConfig().SERVER}/barterit_final/assets/profileimages/0.png",
-                        scale: 2,
-                      ),
-                    ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Row(
+              children: [
+                // Container(
+                //   margin: const EdgeInsets.all(4),
+                //   width: screenWidth * 0.2,
+                //   child: CircleAvatar(
+                //     radius: screenWidth * 0.1,
+                //     child: ClipOval(
+                //       child: CachedNetworkImage(
+                //         imageUrl:
+                //             "${MyConfig().SERVER}/barterit_final/assets/profileimages/${widget.order.buyerId}.png?",
+                //         placeholder: (context, url) => Image.asset(
+                //           pathAsset,
+                //           fit: BoxFit.contain,
+                //         ),
+                //         errorWidget: (context, url, error) => Image.network(
+                //           "${MyConfig().SERVER}/barterit_final/assets/profileimages/0.png",
+                //           scale: 2,
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // ),
+                CircleAvatar(
+                  radius: 32,
+                  backgroundImage: CachedNetworkImageProvider(
+                    "${MyConfig().SERVER}/barterit_final/assets/profileimages/${widget.order.buyerId}.png?",
                   ),
+                  backgroundColor: Colors.grey,
                 ),
-              ),
-              Column(
-                children: [
-                  user.id == "na"
-                      ? const Center(
-                          child: Text("Loading..."),
-                        )
-                      : Padding(
-                          padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("Buyer name: ${user.name}",
-                                  style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold)),
-                              Text("Order ID: ${widget.order.orderId}",
+                SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      user.id == "na"
+                          ? const Center(
+                              child: Text("Loading..."),
+                            )
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Buyer name: ${user.name}",
+                                    style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold)),
+                                SizedBox(height: 4),
+                                Text("Order ID: ${widget.order.orderId}",
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                    )),
+                                SizedBox(height: 4),
+                                Text(
+                                  "Total Paid: RM ${double.parse(widget.order.orderPaid.toString()).toStringAsFixed(2)}",
                                   style: const TextStyle(
                                     fontSize: 14,
-                                  )),
-                              Text(
-                                "Total Paid: RM ${double.parse(widget.order.orderPaid.toString()).toStringAsFixed(2)}",
-                                style: const TextStyle(
-                                  fontSize: 14,
+                                  ),
                                 ),
-                              ),
-                              Text("Status: ${widget.order.orderStatus}",
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                  )),
-                            ],
-                          ),
-                        )
-                ],
-              )
-            ],
-          )),
-        ),
-        Container(
-          padding: const EdgeInsets.all(8),
-          // child: Row(
-          //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-          //   children: [
-          //     // ElevatedButton(
-          //     //     onPressed: () {
-          //     //       if (picuploc == "Selected") {
-          //     //         loadMapDialog();
-          //     //       } else {
-          //     //         Fluttertoast.showToast(
-          //     //             msg: "Location not available",
-          //     //             toastLength: Toast.LENGTH_SHORT,
-          //     //             gravity: ToastGravity.CENTER,
-          //     //             timeInSecForIosWeb: 1,
-          //     //             fontSize: 16.0);
-          //     //       }
-          //     //     },
-          //     //     child: const Text("See Pickup Location")),
-          //     // Text(picuploc)
-          //   ],
-          // ),
-          child: Text(
-            "Item Details",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-        ),
-        orderdetailsList.isEmpty
-            ? Container()
-            : Expanded(
-                flex: 7,
-                child: ListView.builder(
+                                SizedBox(height: 4),
+                                Text("Status: ${widget.order.orderStatus}",
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                    )),
+                                SizedBox(height: 4),
+                                Text(
+                                  "Delivery Address: ${user.address}",
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                              ],
+                            )
+                    ],
+                  ),
+                )
+              ],
+            ),
+            SizedBox(height: screenHeight * 0.08),
+            Text(
+              "Item Details",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 16),
+            orderdetailsList.isEmpty
+                ? Container()
+                : ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
                     itemCount: orderdetailsList.length,
                     itemBuilder: (context, index) {
                       return Card(
@@ -183,23 +177,20 @@ class _BuyerOrderDetailsScreenState extends State<BuyerOrderDetailsScreen> {
                           padding: const EdgeInsets.all(8.0),
                           child: Row(children: [
                             Container(
-                              height: screenHeight *
-                                  0.2, // Set the desired height of the image
-                              width: screenWidth *
-                                  0.2, // Set the desired width of the image
+                              height: 80,
+                              width: 80,
                               child: CachedNetworkImage(
-                                  imageUrl:
-                                      "${MyConfig().SERVER}/barterit_final/assets/items/${orderdetailsList[index].itemId}_${0 + 1}.png",
-                                  placeholder: (context, url) =>
-                                      const LinearProgressIndicator(),
-                                  errorWidget: (context, url, error) =>
-                                      Image.network(
-                                        "${MyConfig().SERVER}/mynelayan/assets/profile/0.png",
-                                        scale: 0.01,
-                                      )),
+                                imageUrl:
+                                    "${MyConfig().SERVER}/barterit_final/assets/items/${orderdetailsList[index].itemId}_${0 + 1}.png",
+                                fit: BoxFit.cover,
+                                placeholder: (context, url) =>
+                                    CircularProgressIndicator(),
+                                errorWidget: (context, url, error) =>
+                                    Icon(Icons.error),
+                              ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
+                            SizedBox(width: 16),
+                            Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -209,12 +200,14 @@ class _BuyerOrderDetailsScreenState extends State<BuyerOrderDetailsScreen> {
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold),
                                   ),
+                                  SizedBox(height: 4),
                                   Text(
                                     "Quantity: ${orderdetailsList[index].orderQty}",
                                     style: const TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.bold),
                                   ),
+                                  SizedBox(height: 4),
                                   Text(
                                     "Paid: RM ${double.parse(orderdetailsList[index].orderPaid.toString()).toStringAsFixed(2)}",
                                     style: const TextStyle(
@@ -227,42 +220,52 @@ class _BuyerOrderDetailsScreenState extends State<BuyerOrderDetailsScreen> {
                           ]),
                         ),
                       );
-                    })),
-        SizedBox(
-          // color: Colors.red,
-          width: screenWidth,
-          height: screenHeight * 0.1,
-          child: Card(
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  const Text("Set order status as completed"),
-                  // DropdownButton(
-                  //   itemHeight: 60,
-                  //   value: selectStatus,
-                  //   onChanged: (newValue) {
-                  //     setState(() {
-                  //       selectStatus = newValue.toString();
-                  //     });
-                  //   },
-                  //   items: statusList.map((selectStatus) {
-                  //     return DropdownMenuItem(
-                  //       value: selectStatus,
-                  //       child: Text(
-                  //         selectStatus,
-                  //       ),
-                  //     );
-                  //   }).toList(),
-                  // ),
-                  ElevatedButton(
-                      onPressed: () {
-                        submitStatus("Completed");
-                      },
-                      child: const Text("Submit"))
-                ]),
-          ),
-        )
-      ]),
+                    }),
+            Padding(
+              padding: EdgeInsets.only(top: screenHeight * 0.09),
+              child: SizedBox(
+                // color: Colors.red,
+                width: screenWidth,
+                height: screenHeight * 0.1,
+                child: Card(
+                  color: Color.fromARGB(255, 231, 253, 247),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        const Text(
+                          "Set order status as completed",
+                          style: TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.w800),
+                        ),
+                        // DropdownButton(
+                        //   itemHeight: 60,
+                        //   value: selectStatus,
+                        //   onChanged: (newValue) {
+                        //     setState(() {
+                        //       selectStatus = newValue.toString();
+                        //     });
+                        //   },
+                        //   items: statusList.map((selectStatus) {
+                        //     return DropdownMenuItem(
+                        //       value: selectStatus,
+                        //       child: Text(
+                        //         selectStatus,
+                        //       ),
+                        //     );
+                        //   }).toList(),
+                        // ),
+                        ElevatedButton(
+                            onPressed: () {
+                              submitStatus("Completed");
+                            },
+                            child: const Text("Submit"))
+                      ]),
+                ),
+              ),
+            )
+          ]),
+        ),
+      ),
     );
   }
 

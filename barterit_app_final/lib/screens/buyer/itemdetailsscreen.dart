@@ -305,27 +305,27 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                     //       fontSize: 24, fontWeight: FontWeight.bold),
                     // ),
                     ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.only(
-                            top: 8,
-                            bottom: 5,
-                            left: 38,
-                            right: 38,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadiusDirectional.circular(25.0),
-                            // side: BorderSide(color: Colors.black),
-                          ),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.only(
+                          top: 8,
+                          bottom: 5,
+                          left: 38,
+                          right: 38,
                         ),
-                        onPressed: () {
-                          barteritdialog();
-                          print(totalprice);
-                        },
-                        child: const Text(
-                          "Barter It",
-                          style: TextStyle(fontSize: 15),
-                        )),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadiusDirectional.circular(25.0),
+                          // side: BorderSide(color: Colors.black),
+                        ),
+                      ),
+                      onPressed: () {
+                        barteritdialog();
+                        print(totalprice);
+                      },
+                      child: const Text(
+                        "Barter It",
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ),
                   ]),
             ),
           ),
@@ -344,17 +344,6 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
             content: const Text("Please log in to barter the item."),
             actions: [
               TextButton(
-                // onPressed: () async {
-                //   Navigator.of(context).pop();
-                //   Navigator.pushReplacement(
-                //     context,
-                //     MaterialPageRoute(
-                //       builder: (context) =>
-                //           LoginScreen(), // Replace with the login screen widget
-                //     ),
-                //   );
-                // },
-
                 onPressed: () async {
                   await Navigator.pushAndRemoveUntil(
                     context,
@@ -373,76 +362,8 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
       );
       return;
     }
-    // else if (widget.user.address == null) {
-    //   showDialog(
-    //     context: context,
-    //     builder: (BuildContext context) {
-    //       // return object of type Dialog
-    //       return AlertDialog(
-    //         shape: const RoundedRectangleBorder(
-    //             borderRadius: BorderRadius.all(Radius.circular(20.0))),
-    //         title: const Text(
-    //           "Add Address?",
-    //           style: TextStyle(),
-    //         ),
-    //         content: Column(
-    //           mainAxisSize: MainAxisSize.min,
-    //           children: [
-    //             TextFormField(
-    //               controller: _addressController,
-    //               decoration: InputDecoration(
-    //                 labelText: 'Enter your address',
-    //                 border: OutlineInputBorder(
-    //                     borderRadius: BorderRadius.circular(10.0)),
-    //                 contentPadding: EdgeInsets.symmetric(
-    //                   vertical: screenHeight * 0.02,
-    //                   horizontal: screenHeight * 0.02,
-    //                 ),
-    //               ),
-    //               validator: (value) {
-    //                 if (value == null || value.isEmpty) {
-    //                   return 'Please enter your address';
-    //                 }
-    //                 return null;
-    //               },
-    //             ),
-    //           ],
-    //         ),
-    //         actions: <Widget>[
-    //           TextButton(
-    //             child: const Text(
-    //               "Yes",
-    //               style: TextStyle(),
-    //             ),
-    //             onPressed: () {
-    //               Navigator.of(context).pop();
-    //               String address = _addressController.text;
-    //               _addAddress(address);
-    //             },
-    //           ),
-    //           TextButton(
-    //             child: const Text(
-    //               "No",
-    //               style: TextStyle(),
-    //             ),
-    //             onPressed: () {
-    //               Navigator.of(context).pop();
-    //             },
-    //           ),
-    //         ],
-    //       );
-    //     },
-    //   );
-    //   return;
-    // }
 
     if (widget.user.id.toString() == widget.useritem.userId.toString()) {
-      // Fluttertoast.showToast(
-      //     msg: "User cannot add own catch",
-      //     toastLength: Toast.LENGTH_SHORT,
-      //     gravity: ToastGravity.CENTER,
-      //     timeInSecForIosWeb: 1,
-      //     fontSize: 16.0);
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("User cannot barter own item")));
       return;

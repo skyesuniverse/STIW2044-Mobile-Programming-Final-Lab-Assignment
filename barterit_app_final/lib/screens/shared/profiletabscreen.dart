@@ -84,7 +84,7 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Card(
-                color: Colors.indigoAccent,
+                color: Colors.teal[300],
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
@@ -179,18 +179,6 @@ class _ProfileTabScreenState extends State<ProfileTabScreen> {
                 trailing: Icon(Icons.arrow_forward_ios_rounded),
                 onTap: () {
                   _updateNameDialog();
-                },
-              ),
-              Divider(),
-              SizedBox(height: screenHeight * 0.0002),
-              ListTile(
-                dense: true,
-                // tileColor: Colors.amber,
-                leading: Icon(Icons.location_on_outlined),
-                title: Text('Add Address'),
-                trailing: Icon(Icons.arrow_forward_ios_rounded),
-                onTap: () {
-                  _addAddressDialog();
                 },
               ),
               Divider(),
