@@ -78,94 +78,96 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
                 ),
               ),
               Expanded(
-                  child: GridView.count(
-                      crossAxisCount: 2,
-                      children: List.generate(
-                        itemList.length,
-                        (index) {
-                          return Card(
-                            child: InkWell(
-                              onTap: () async {
-                                // widget.user.id.toString() == "na"
-                                // if (widget.user.id == "na") {
-                                //   showDialog(
-                                //     context: context,
-                                //     builder: (BuildContext context) {
-                                //       return AlertDialog(
-                                //         title: const Text('Login Required'),
-                                //         content: const Text(
-                                //             "Please log in to view item details."),
-                                //         actions: [
-                                //           TextButton(
-                                //             onPressed: () {
-                                //               Navigator.of(context).pop();
-                                //               Navigator.pushReplacement(
-                                //                 context,
-                                //                 MaterialPageRoute(
-                                //                   builder: (context) =>
-                                //                       LoginScreen(), // Replace with the login screen widget
-                                //                 ),
-                                //               );
-                                //             },
-                                //             child: Text('OK'),
-                                //           ),
-                                //         ],
-                                //       );
-                                //     },
-                                //   );
-                                // } else {
-                                Item useritem =
-                                    Item.fromJson(itemList[index].toJson());
-                                await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (content) => ItemDetailsScreen(
-                                      user: widget.user,
-                                      useritem: useritem,
-                                      page: curpage,
-                                    ),
-                                  ),
-                                );
-                                loadItems();
-                                // }
-                              },
-                              child: Column(
-                                children: [
-                                  CachedNetworkImage(
-                                    width: screenWidth,
-                                    fit: BoxFit.cover,
-                                    imageUrl:
-                                        "${MyConfig().SERVER}/barterit_final/assets/items/${itemList[index].itemId}_1.png",
-                                    placeholder: (context, url) =>
-                                        const LinearProgressIndicator(),
-                                    errorWidget: (context, url, error) =>
-                                        const Icon(Icons.error),
-                                  ),
-                                  Text(
-                                    itemList[index].itemName.toString(),
-                                    style: const TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    "RM ${double.parse(itemList[index].itemPrice.toString()).toStringAsFixed(2)}",
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                  Text(
-                                    "${itemList[index].itemQty} available",
-                                    style: const TextStyle(
-                                      fontSize: 10,
-                                    ),
-                                  ),
-                                ],
+                child: GridView.count(
+                  crossAxisCount: 2,
+                  children: List.generate(
+                    itemList.length,
+                    (index) {
+                      return Card(
+                        child: InkWell(
+                          onTap: () async {
+                            // widget.user.id.toString() == "na"
+                            // if (widget.user.id == "na") {
+                            //   showDialog(
+                            //     context: context,
+                            //     builder: (BuildContext context) {
+                            //       return AlertDialog(
+                            //         title: const Text('Login Required'),
+                            //         content: const Text(
+                            //             "Please log in to view item details."),
+                            //         actions: [
+                            //           TextButton(
+                            //             onPressed: () {
+                            //               Navigator.of(context).pop();
+                            //               Navigator.pushReplacement(
+                            //                 context,
+                            //                 MaterialPageRoute(
+                            //                   builder: (context) =>
+                            //                       LoginScreen(), // Replace with the login screen widget
+                            //                 ),
+                            //               );
+                            //             },
+                            //             child: Text('OK'),
+                            //           ),
+                            //         ],
+                            //       );
+                            //     },
+                            //   );
+                            // } else {
+                            Item useritem =
+                                Item.fromJson(itemList[index].toJson());
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (content) => ItemDetailsScreen(
+                                  user: widget.user,
+                                  useritem: useritem,
+                                  page: curpage,
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                      ))),
+                            );
+                            loadItems();
+                            // }
+                          },
+                          child: Column(
+                            children: [
+                              CachedNetworkImage(
+                                width: screenWidth,
+                                fit: BoxFit.cover,
+                                imageUrl:
+                                    "${MyConfig().SERVER}/barterit_final/assets/items/${itemList[index].itemId}_1.png",
+                                placeholder: (context, url) =>
+                                    const LinearProgressIndicator(),
+                                errorWidget: (context, url, error) =>
+                                    const Icon(Icons.error),
+                              ),
+                              Text(
+                                itemList[index].itemName.toString(),
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                "RM ${double.parse(itemList[index].itemPrice.toString()).toStringAsFixed(2)}",
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                ),
+                              ),
+                              Text(
+                                "${itemList[index].itemQty} available",
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
               ////section for pagination
               SizedBox(
                 height: 28,
